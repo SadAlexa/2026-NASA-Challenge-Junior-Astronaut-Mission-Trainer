@@ -1,0 +1,38 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://ui/card_button.gd" id="1_24acr"]
+
+[node name="root" type="Panel" unique_id=1406984106]
+custom_minimum_size = Vector2(180, 220)
+script = ExtResource("1_24acr")
+
+[node name="VBox" type="VBoxContainer" parent="." unique_id=1257148190]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="IconLabel" type="Label" parent="VBox" unique_id=1330237101]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "❓"
+horizontal_alignment = 1
+
+[node name="NameLabel" type="Label" parent="VBox" unique_id=1202043314]
+layout_mode = 2
+text = "?"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="CostLabel" type="Label" parent="VBox" unique_id=2109352011]
+layout_mode = 2
+text = "Free"
+horizontal_alignment = 1
+
+[node name="LockOverlay" type="ColorRect" parent="." unique_id=1957703123]
+visible = false
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0, 0, 0, 0.5)
