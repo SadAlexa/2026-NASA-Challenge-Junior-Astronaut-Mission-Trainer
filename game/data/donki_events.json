@@ -1,0 +1,47 @@
+[
+  {
+    "id": "FLR_2025_031",
+    "class": "M",
+    "date": "2025-02-10",
+    "description": "M-class solar flare with associated SEP event",
+    "radiation_bonus": 35,
+    "duration_sels": 2,
+    "panel_damage": 0
+  },
+  {
+    "id": "FLR_2025_112",
+    "class": "C",
+    "date": "2025-04-23",
+    "description": "C-class solar flare with minor SEP activity",
+    "radiation_bonus": 15,
+    "duration_sels": 2,
+    "panel_damage": 0
+  },
+  {
+    "id": "CME_2025_089",
+    "class": "X",
+    "date": "2025-06-14",
+    "description": "X-class flare with coronal mass ejection (CME)",
+    "radiation_bonus": 60,
+    "duration_sels": 2,
+    "panel_damage": -10
+  },
+  {
+    "id": "FLR_2025_201",
+    "class": "M",
+    "date": "2025-08-03",
+    "description": "M-class solar flare, moderate SEP storm",
+    "radiation_bonus": 35,
+    "duration_sels": 2,
+    "panel_damage": 0
+  },
+  {
+    "id": "FLR_2025_245",
+    "class": "C",
+    "date": "2025-09-18",
+    "description": "C-class flare, low-level particle event",
+    "radiation_bonus": 15,
+    "duration_sels": 2,
+    "panel_damage": 0
+  }
+]
