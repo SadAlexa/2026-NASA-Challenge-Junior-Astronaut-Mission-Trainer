@@ -1,18 +1,20 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://vbm7vx1hx5fv"]
 
-[ext_resource type="Script" path="res://game/game.gd" id="1_u5opy"]
-[ext_resource type="Script" path="res://game/card_system.gd" id="2_y36n6"]
-[ext_resource type="Script" path="res://game/event_system.gd" id="3_l8g03"]
-[ext_resource type="Script" path="res://game/night_phase.gd" id="4_j8tme"]
-[ext_resource type="Script" path="res://ui/hud.gd" id="5_3vho3"]
-[ext_resource type="Script" path="res://ui/lumi_box.gd" id="6_qf6n1"]
-[ext_resource type="Script" path="res://game/end_screen.gd" id="7_vsp63"]
+[ext_resource type="Script" uid="uid://x5pi7ximldkk" path="res://game/game.gd" id="1_u5opy"]
+[ext_resource type="Script" uid="uid://bs55hdbulec48" path="res://game/card_system.gd" id="2_y36n6"]
+[ext_resource type="Script" uid="uid://igxkamb4u23g" path="res://game/event_system.gd" id="3_l8g03"]
+[ext_resource type="Script" uid="uid://n0k1evjegxm1" path="res://game/night_phase.gd" id="4_j8tme"]
+[ext_resource type="Script" uid="uid://s4fqmb7dutnn" path="res://ui/hud.gd" id="5_3vho3"]
+[ext_resource type="Script" uid="uid://bd86ur3worq87" path="res://ui/lumi_box.gd" id="6_qf6n1"]
+[ext_resource type="Script" uid="uid://c8wu1a0hrjx4a" path="res://game/end_screen.gd" id="7_vsp63"]
 
 [node name="root" type="Control" unique_id=1262097159]
 layout_mode = 3
-anchors_preset = 0
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("1_u5opy")
 
 [node name="Background" type="ColorRect" parent="." unique_id=945865754]
@@ -37,55 +39,106 @@ script = ExtResource("5_3vho3")
 anchors_preset = 10
 anchor_right = 1.0
 offset_bottom = 50.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
 theme_override_constants/separation = 16
+alignment = 1
+
+[node name="PaddingRight" type="Panel" parent="HUD/TopBar" unique_id=343326239]
+layout_mode = 2
 
 [node name="SolCounter" type="Label" parent="HUD/TopBar" unique_id=256672365]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
 text = "Sel 1/30"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="EnergyBar" type="ProgressBar" parent="HUD/TopBar" unique_id=1541084470]
 custom_minimum_size = Vector2(100, 20)
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
 
 [node name="EnergyLabel" type="Label" parent="HUD/TopBar" unique_id=92411350]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
 text = "80"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="PanelsLabel" type="Label" parent="HUD/TopBar" unique_id=598703685]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
 text = "☀️50%"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="LifeBar" type="ProgressBar" parent="HUD/TopBar" unique_id=1615362076]
 custom_minimum_size = Vector2(100, 20)
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
 
 [node name="HealthLabel" type="Label" parent="HUD/TopBar" unique_id=236206649]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
 text = "❤️100"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="O2Mini" type="Label" parent="HUD/TopBar" unique_id=1342064243]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
 text = "O₂:80"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="FoodMini" type="Label" parent="HUD/TopBar" unique_id=998817871]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
 text = "🌱60"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="WaterMini" type="Label" parent="HUD/TopBar" unique_id=975274257]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
 text = "💧70"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="RaysBar" type="ProgressBar" parent="HUD/TopBar" unique_id=1053285043]
 custom_minimum_size = Vector2(100, 20)
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
 
 [node name="RaysLabel" type="Label" parent="HUD/TopBar" unique_id=176390473]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
 text = "☢️0"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="ScienceBadge" type="Label" parent="HUD/TopBar" unique_id=613607317]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
 text = "🔬 0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PaddingLeft" type="Panel" parent="HUD/TopBar" unique_id=240899189]
+layout_mode = 2
 
 [node name="LumiBox" type="Panel" parent="HUD" unique_id=342937078]
 visible = false
@@ -146,11 +199,15 @@ theme_override_constants/separation = 16
 alignment = 1
 
 [node name="EndDayButton" type="Button" parent="." unique_id=812156717]
-layout_mode = 0
-anchor_left = 0.82
-anchor_top = 0.62
-anchor_right = 0.97
-anchor_bottom = 0.65
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.75600004
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 67.31995
+offset_top = 331.0
+offset_right = -31.599976
+offset_bottom = -308.6
 text = "☀️ End Day"
 
 [node name="ReportOverlay" type="Control" parent="." unique_id=1049696898]

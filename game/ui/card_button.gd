@@ -12,6 +12,7 @@ var game_ref: Node = null
 var info_btn: Button
 var effects_box: VBoxContainer
 var _effect_labels: Array = []
+var cost_label_top: Label
 
 
 const EFFECT_ICONS: Dictionary = {
@@ -30,6 +31,7 @@ func _ready() -> void:
 	gui_input.connect(_on_gui_input)
 	_create_info_button()
 	_create_effects_area()
+	_create_cost_label()
 
 
 func _create_info_button() -> void:
@@ -47,6 +49,19 @@ func _create_info_button() -> void:
 	info_btn.offset_bottom = 30.0
 	info_btn.pressed.connect(_on_info_pressed)
 	add_child(info_btn)
+
+
+func _create_cost_label() -> void:
+	cost_label_top = Label.new()
+	cost_label_top.name = "CostLabelTop"
+	cost_label_top.add_theme_font_size_override("font_size", 14)
+	cost_label_top.offset_left = 4.0
+	cost_label_top.offset_top = 2.0
+	cost_label_top.offset_right = 50.0
+	cost_label_top.offset_bottom = 22.0
+	add_child(cost_label_top)
+	# Hide the original in VBox
+	cost_label.visible = false
 
 
 func _create_effects_area() -> void:
@@ -69,10 +84,7 @@ func setup(card: Dictionary, game: Node) -> void:
 	name_label.text = card.get("name", "?")
 	
 	var cost = card.get("cost_battery", 0)
-	if cost > 0:
-		cost_label.text = "⚡%d" % cost
-	else:
-		cost_label.text = "Free"
+	cost_label_top.text = "⚡%d" % cost
 	
 	_update_effects()
 	_update_lock()
@@ -85,11 +97,6 @@ func _update_effects() -> void:
 	_effect_labels.clear()
 	
 	var effects: Dictionary = card_data.get("effects", {})
-	
-	# Add battery cost as an effect if > 0
-	var cost = card_data.get("cost_battery", 0)
-	if cost > 0:
-		_add_effect_label("⚡", -cost)
 	
 	for key in effects:
 		var val = effects[key]
