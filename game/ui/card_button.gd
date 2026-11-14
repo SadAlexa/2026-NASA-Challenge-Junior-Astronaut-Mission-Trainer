@@ -10,12 +10,26 @@ var game_ref: Node = null
 @onready var lock_overlay: ColorRect = $LockOverlay
 
 var info_btn: Button
+var effects_box: VBoxContainer
+var _effect_labels: Array = []
+
+
+const EFFECT_ICONS: Dictionary = {
+	"health": "❤️",
+	"oxygen": "💨",
+	"food": "🥫",
+	"water": "💧",
+	"panels": "☀️",
+	"radiation": "☢️",
+	"science": "🔬",
+}
 
 
 func _ready() -> void:
 	lock_overlay.color = Color(0, 0, 0, 0.5)
 	gui_input.connect(_on_gui_input)
 	_create_info_button()
+	_create_effects_area()
 
 
 func _create_info_button() -> void:
@@ -25,17 +39,27 @@ func _create_info_button() -> void:
 	info_btn.flat = true
 	info_btn.custom_minimum_size = Vector2(28, 28)
 	info_btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	# Position: top-right corner
 	info_btn.anchor_left = 1.0
 	info_btn.anchor_right = 1.0
-	info_btn.anchor_top = 0.0
-	info_btn.anchor_bottom = 0.0
 	info_btn.offset_left = -30.0
 	info_btn.offset_top = 2.0
 	info_btn.offset_right = -2.0
 	info_btn.offset_bottom = 30.0
 	info_btn.pressed.connect(_on_info_pressed)
 	add_child(info_btn)
+
+
+func _create_effects_area() -> void:
+	effects_box = VBoxContainer.new()
+	effects_box.name = "EffectsBox"
+	effects_box.anchor_top = 1.0
+	effects_box.anchor_bottom = 1.0
+	effects_box.offset_top = -80.0
+	effects_box.offset_left = 4.0
+	effects_box.offset_right = -4.0
+	effects_box.offset_bottom = -4.0
+	effects_box.alignment = BoxContainer.ALIGNMENT_END
+	add_child(effects_box)
 
 
 func setup(card: Dictionary, game: Node) -> void:
@@ -50,7 +74,42 @@ func setup(card: Dictionary, game: Node) -> void:
 	else:
 		cost_label.text = "Free"
 	
+	_update_effects()
 	_update_lock()
+
+
+func _update_effects() -> void:
+	# Clear old labels
+	for lbl in _effect_labels:
+		lbl.queue_free()
+	_effect_labels.clear()
+	
+	var effects: Dictionary = card_data.get("effects", {})
+	
+	# Add battery cost as an effect if > 0
+	var cost = card_data.get("cost_battery", 0)
+	if cost > 0:
+		_add_effect_label("⚡", -cost)
+	
+	for key in effects:
+		var val = effects[key]
+		var icon = EFFECT_ICONS.get(key, "•")
+		_add_effect_label(icon, val)
+
+
+func _add_effect_label(icon: String, value: int) -> void:
+	var lbl := Label.new()
+	var sign = "+" if value > 0 else ""
+	lbl.text = "%s %s%d" % [icon, sign, value]
+	lbl.add_theme_font_size_override("font_size", 13)
+	if value > 0:
+		lbl.add_theme_color_override("font_color", Color(0.4, 1.0, 0.4))
+	elif value < 0:
+		lbl.add_theme_color_override("font_color", Color(1.0, 0.4, 0.4))
+	else:
+		lbl.add_theme_color_override("font_color", Color.WHITE)
+	effects_box.add_child(lbl)
+	_effect_labels.append(lbl)
 
 
 func _update_lock() -> void:
