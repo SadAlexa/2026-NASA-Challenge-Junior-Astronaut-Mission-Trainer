@@ -9,8 +9,10 @@ func _ready() -> void:
 
 
 func _install_emoji_fallback() -> void:
-	# The Web export has no system emoji font, so emoji would render as tofu
-	# boxes. Bundle a monochrome emoji font as a fallback for the default font.
+	# Browsers have no system emoji font, so emoji would render as tofu boxes.
+	# On desktop, keep the platform's (usually colour) emoji font instead.
+	if not OS.has_feature("web"):
+		return
 	var emoji_font: Font = load("res://assets/fonts/NotoEmoji.ttf")
 	if emoji_font == null:
 		push_warning("Main: emoji fallback font is missing")
