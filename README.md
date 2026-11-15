@@ -2,13 +2,11 @@
 
 > Mission Selene: the game title is named after the Ancient Greek goddess and personification of the Moon.
 
-A small, kid-friendly strategy game for the **2026 NASA Space Apps Challenge**
-("Build a Junior Astronaut Mission Trainer"). You run a lunar outpost for ten
-lunar revolutions (*sels*) and must keep the crew alive while balancing life
+A small, kid-friendly strategy game for the **2026 NASA Space Apps Challenge: "Build a Junior Astronaut Mission Trainer"**. You run a lunar outpost for ten lunar revolutions (__*Sels*__) and must keep the crew alive while balancing life
 support, radiation shielding, power, food production and communication with
 Earth.
 
-> Sel is a word that we invented (Sel -> Selene) for semplicity that represent a lunar revolution.
+> *Sel* is a word that we invented (Sel -> Selene) for semplicity that represent a lunar revolution.
 
 ## Play
 
@@ -43,8 +41,7 @@ assets, so the Web export works offline:
 | `game/data/apod_fallback.jpg` | Astronomy Picture of the Day image, bundled for offline display (credit shown in game). |
 
 Every solar storm in the game is tied to a **real DONKI event**: the UI shows
-its class, date, event ID and a link to the event page. The Data panel and the
-end screen state that the values are **archived**, never live.
+its class, date, event ID and a link to the event page.
 
 ### Numbers and units
 
@@ -59,9 +56,6 @@ Game values use a friendly 0–100 scale. The conversion is defined in one place
 - The RadLab/OSDR figure is **absorbed dose in silicon (µGy/h)**, not a human
   equivalent dose; the Data panel says so explicitly.
 
-Card, storm and scoring numbers live only in `constants.gd`; the DONKI archive
-stores real event identity only, never gameplay tuning.
-
 ## Regenerate the embedded data
 
 Requires Python 3.10+ and internet access (build time only):
@@ -70,47 +64,14 @@ Requires Python 3.10+ and internet access (build time only):
 python3 tools/fetch_nasa_data.py
 ```
 
-The script uses NASA's CCMC DONKI service by default. If `NASA_API_KEY` is set,
-it tries `api.nasa.gov` first. For APOD it uses `NASA_APOD_API_KEY` from the
-environment or from `game/.env`, then falls back to the public APOD JSON feed.
-`game/.env` is git-ignored and is never included in a build; do not put keys in
-exported projects.
-
-## Develop and test
+## Develop
 
 Open `game/project.godot` in Godot 4.7 or run:
 
 ```bash
 cd game
 godot --path .                        # play
-godot --headless --path . res://tests/test_runner.tscn   # rules + data tests
 ```
-
-The test runner checks night math (including the Exercise oxygen rule), units,
-storm/shelter damage, deck and crisis determinism, the discard cycle, the
-DONKI archive schema, and a full ten-sel mission through the real scene.
-
-## Web export
-
-`game/export_presets.cfg` defines a **Web** preset with the **Compatibility**
-renderer and threads disabled. JSON and image files are explicitly included
-because Godot excludes `*.json` by default:
-
-```
-include_filter="*.json,*.jpg,*.png"
-```
-
-Export from the editor or:
-
-```bash
-cd game
-godot --headless --export-release "Web" build/web/index.html
-```
-
-Serve the exported folder over HTTP (for example
-`python3 -m http.server --directory build/web`) and test in a browser. The game
-does not fetch anything at runtime, so it also works without a network
-connection once loaded.
 
 ## Attribution
 
@@ -118,10 +79,5 @@ connection once loaded.
 - Radiation baseline: **NASA RadLab / OSDR**, CRaTER-D1D2 instrument on LRO.
 - Astronomy picture: **NASA APOD**, with the photographer's credit shown in
   game.
-- Space-weather context: **NOAA SWPC** (labelled separately from NASA data).
-- UI emoji: **Noto Emoji** (SIL Open Font License), bundled so the Web export
-  renders emoji without a system font.
+- UI emoji: **EmojiOne Color** (MIT License).
 - Built with **Godot Engine 4.7**.
-
-NASA does not endorse this game. It is a challenge prototype; the simplified
-0–100 values are for gameplay, not for mission planning.
