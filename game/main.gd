@@ -8,9 +8,7 @@ func _ready() -> void:
 
 
 func _install_emoji_fallback() -> void:
-	if not OS.has_feature("web"):
-		return
-	var emoji_font: Font = load("res://assets/fonts/NotoEmoji.ttf")
+	var emoji_font: Font = load("res://assets/fonts/EmojiOneColor.otf")
 	if emoji_font == null:
 		push_warning("Main: emoji fallback font is missing")
 		return

@@ -30,7 +30,7 @@ var _science_note: String = ""
 func _ready() -> void:
 	card_system = $CardSystem
 	event_system = $EventSystem
-	end_day_phase = $NightPhase
+	end_day_phase = $EndDayPhase
 	hud = $HUD
 	hand_container = $Hand/CardRow
 	played_cards_container = $Board/PlayedCards
@@ -175,13 +175,13 @@ func _announce_dawn() -> void:
 				% str(_crisis_event.get("rbe_scale", "R1"))
 			)
 			lumi_box.add_line(
-				"Tap 🛡️ Shelter to power the shielded module for %.0f ⚡: the storm radiation bonus is halved tonight."
+				"Tap 🛡️ Shelter to power the shielded module for %.0f ⚡: the storm radiation bonus is halved soon."
 				% Constants.SHELTER_COST
 			)
 		"micrometeoroid":
 			lumi_box.say("There's no air on the Moon to burn up meteors: a tiny space pebble dented our panels!", "alert")
 		"o2_malfunction":
-			lumi_box.say("An oxygen filter got clogged! Play Check O₂ to fix it before tonight.", "alert")
+			lumi_box.say("An oxygen filter got clogged! Play Check O₂ to fix it.", "alert")
 
 	if _science_note != "":
 		lumi_box.visible = true
@@ -209,7 +209,7 @@ func _on_end_day() -> void:
 	card_system.discard_hand()
 
 	phase = Phase.END_DAY
-	var deltas: Dictionary = end_day_phase.run_night()
+	var deltas: Dictionary = end_day_phase.run_end_day()
 	event_system.end_sel()
 	_update_action_buttons()
 
@@ -258,10 +258,10 @@ func _show_report(deltas: Dictionary) -> void:
 
 	if bool(deltas.get("blackout", false)):
 		lines.append("")
-		lines.append("⚡ BLACKOUT! The outpost ran out of power tonight.")
+		lines.append("⚡ BLACKOUT! The outpost ran out of power.")
 	if bool(deltas.get("o2_malfunction", false)):
 		lines.append("")
-		lines.append("🫁 The oxygen filter stayed clogged: production was 0 tonight. Play Check O₂ next time!")
+		lines.append("🫁 The oxygen filter stayed clogged: production was 0. Play Check O₂ next time!")
 	if bool(deltas.get("sheltered", false)):
 		lines.append("🛡️ Storm shelter powered: storm radiation halved (-%.0f ⚡)." % Constants.SHELTER_COST)
 
@@ -385,14 +385,14 @@ func _on_shelter_toggled(pressed: bool) -> void:
 		if GameState.battery < Constants.SHELTER_COST:
 			shelter_button.set_pressed_no_signal(false)
 			say_lumi(
-				"We need %.0f Battery to power the storm shelter tonight!" % Constants.SHELTER_COST,
+				"We need %.0f Battery to power the storm shelter!" % Constants.SHELTER_COST,
 				"curious"
 			)
 			return
 		GameState.battery = clampf(GameState.battery - Constants.SHELTER_COST, 0.0, 100.0)
 		GameState.sheltered_this_sel = true
 		say_lumi(
-			"Storm shelter powered! Radiation exposure is halved tonight, but we spent %.0f Battery."
+			"Storm shelter powered! Radiation exposure is halved for now, but we spent %.0f Battery."
 			% Constants.SHELTER_COST,
 			"happy"
 		)

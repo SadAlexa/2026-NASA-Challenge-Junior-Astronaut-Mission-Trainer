@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://x5pi7ximldkk" path="res://game/game.gd" id="1"]
 [ext_resource type="Script" uid="uid://bs55hdbulec48" path="res://game/card_system.gd" id="2"]
 [ext_resource type="Script" uid="uid://igxkamb4u23g" path="res://game/event_system.gd" id="3"]
-[ext_resource type="Script" uid="uid://n0k1evjegxm1" path="res://game/night_phase.gd" id="4"]
+[ext_resource type="Script" uid="uid://n0k1evjegxm1" path="res://game/end_game_phase.gd" id="4"]
 [ext_resource type="Script" uid="uid://s4fqmb7dutnn" path="res://ui/hud.gd" id="5"]
 [ext_resource type="Script" uid="uid://bd86ur3worq87" path="res://ui/lumi_box.gd" id="6"]
 [ext_resource type="Script" uid="uid://c8wu1a0hrjx4a" path="res://game/end_screen.gd" id="7"]
@@ -30,7 +30,7 @@ script = ExtResource("2")
 [node name="EventSystem" type="Node" parent="." unique_id=401613893]
 script = ExtResource("3")
 
-[node name="NightPhase" type="Node" parent="." unique_id=1509210451]
+[node name="EndDayPhase" type="Node" parent="." unique_id=1509210451]
 script = ExtResource("4")
 
 [node name="HUD" type="CanvasLayer" parent="." unique_id=866805798]
