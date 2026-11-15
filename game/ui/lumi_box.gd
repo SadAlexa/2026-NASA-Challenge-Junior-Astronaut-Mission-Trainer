@@ -29,7 +29,7 @@ func _ready() -> void:
 func _create_close_button() -> void:
 	close_btn = Button.new()
 	close_btn.name = "CloseBtn"
-	close_btn.text = "✕"
+	close_btn.text = "×"
 	close_btn.flat = true
 	close_btn.custom_minimum_size = Vector2(28, 28)
 	close_btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND

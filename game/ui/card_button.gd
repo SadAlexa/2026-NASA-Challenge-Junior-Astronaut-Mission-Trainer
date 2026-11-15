@@ -39,7 +39,7 @@ func _ready() -> void:
 func _create_info_button() -> void:
 	info_btn = Button.new()
 	info_btn.name = "InfoBtn"
-	info_btn.text = "ℹ️"
+	info_btn.text = "i"
 	info_btn.flat = true
 	info_btn.custom_minimum_size = Vector2(28, 28)
 	info_btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
