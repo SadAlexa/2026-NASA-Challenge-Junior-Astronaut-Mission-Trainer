@@ -9,7 +9,7 @@ back to the public science.nasa.gov APOD JSON endpoint (same APOD content).
 
 Outputs:
     game/data/donki_events.json   curated DONKI FLR archive + provenance
-    game/data/nasa_reference.json RadLab/OSDR baseline, APOD snapshot, NOAA Kp
+    game/data/nasa_reference.json RadLab/OSDR baseline, APOD snapshot
     game/data/apod_fallback.jpg   bundled APOD image (offline fallback)
 
 The game never makes network calls. This script is the only network step.
@@ -375,26 +375,6 @@ def build_apod() -> dict:
         "source": "https://apod.nasa.gov/",
     }
 
-
-def build_space_weather() -> dict:
-    try:
-        arr = get_json(
-            "https://services.swpc.noaa.gov/json/planetary_k_index_1m.json",
-            timeout=25,
-        )
-        latest = arr[-1] if isinstance(arr, list) and arr else {}
-        return {
-            "source": "NOAA SWPC (not NASA)",
-            "kp_index": int(latest.get("kp_index", 0)),
-            "kp_label": str(latest.get("kp", "")),
-            "time_tag": str(latest.get("time_tag", "")),
-            "url": "https://services.swpc.noaa.gov/json/planetary_k_index_1m.json",
-        }
-    except Exception as exc:  # noqa: BLE001
-        print(f"  ! SWPC Kp: {exc}")
-        return {"source": "NOAA SWPC (not NASA)", "kp_index": 0, "kp_label": "", "time_tag": ""}
-
-
 def main() -> int:
     DATA.mkdir(parents=True, exist_ok=True)
 
@@ -418,10 +398,6 @@ def main() -> int:
     apod = build_apod()
     print(f"  {apod['date']} - {apod['title']}")
 
-    print("== NOAA SWPC ==")
-    swpc = build_space_weather()
-    print(f"  Kp {swpc['kp_index']} @ {swpc['time_tag']}")
-
     reference = {
         "retrieved": dt.date.today().isoformat(),
         "archived": True,
@@ -432,7 +408,6 @@ def main() -> int:
             "game_unit_mSv_day": round(LUNAR_SURFACE_MSV_DAY / GAME_BASE_UNITS, 4),
         },
         "apod": apod,
-        "space_weather": swpc,
     }
     (DATA / "nasa_reference.json").write_text(
         json.dumps(reference, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"

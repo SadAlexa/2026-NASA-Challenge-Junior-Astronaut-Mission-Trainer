@@ -2,16 +2,16 @@ extends CanvasLayer
 ## HUD — binds bars to GameState.
 
 @onready var sel_label: Label = $TopBar/SolCounter
-@onready var energy_bar: ProgressBar = $TopBar/EnergyBar
-@onready var energy_label: Label = $TopBar/EnergyLabel
+@onready var energy_bar: ProgressBar = $TopBar/EnergyContainer/EnergyBar
+@onready var energy_label: Label = $TopBar/EnergyContainer/EnergyLabel
 @onready var panels_label: Label = $TopBar/PanelsLabel
-@onready var life_bar: ProgressBar = $TopBar/LifeBar
-@onready var health_label: Label = $TopBar/HealthLabel
+@onready var life_bar: ProgressBar = $TopBar/HealthContainer/LifeBar
+@onready var health_label: Label = $TopBar/HealthContainer/HealthLabel
 @onready var o2_mini: Label = $TopBar/O2Mini
 @onready var food_mini: Label = $TopBar/FoodMini
 @onready var water_mini: Label = $TopBar/WaterMini
-@onready var rays_bar: ProgressBar = $TopBar/RaysBar
-@onready var rays_label: Label = $TopBar/RaysLabel
+@onready var rays_bar: ProgressBar = $TopBar/RaysContainer/RaysBar
+@onready var rays_label: Label = $TopBar/RaysContainer/RaysLabel
 @onready var science_badge: Label = $TopBar/ScienceBadge
 
 

@@ -56,13 +56,50 @@ text = "Sel 1/10"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="EnergyBar" type="ProgressBar" parent="HUD/TopBar" unique_id=955235882]
+[node name="RaysContainer" type="VBoxContainer" parent="HUD/TopBar" unique_id=1836202231]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="RaysLabel" type="Label" parent="HUD/TopBar/RaysContainer" unique_id=716937143]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "☢️0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RaysBar" type="ProgressBar" parent="HUD/TopBar/RaysContainer" unique_id=1755504018]
 custom_minimum_size = Vector2(72, 20)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
 
-[node name="EnergyLabel" type="Label" parent="HUD/TopBar" unique_id=1354039648]
+[node name="HealthContainer" type="VBoxContainer" parent="HUD/TopBar" unique_id=1999250309]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="HealthLabel" type="Label" parent="HUD/TopBar/HealthContainer" unique_id=2038302169]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "❤️100"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="LifeBar" type="ProgressBar" parent="HUD/TopBar/HealthContainer" unique_id=1081979223]
+custom_minimum_size = Vector2(72, 20)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+
+[node name="EnergyContainer" type="VBoxContainer" parent="HUD/TopBar" unique_id=1570030735]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="EnergyLabel" type="Label" parent="HUD/TopBar/EnergyContainer" unique_id=1354039648]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
@@ -70,25 +107,17 @@ text = "80"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="PanelsLabel" type="Label" parent="HUD/TopBar" unique_id=37801483]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 1
-text = "☀️50%"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="LifeBar" type="ProgressBar" parent="HUD/TopBar" unique_id=1081979223]
+[node name="EnergyBar" type="ProgressBar" parent="HUD/TopBar/EnergyContainer" unique_id=955235882]
 custom_minimum_size = Vector2(72, 20)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
 
-[node name="HealthLabel" type="Label" parent="HUD/TopBar" unique_id=2038302169]
+[node name="PanelsLabel" type="Label" parent="HUD/TopBar" unique_id=37801483]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
-text = "❤️100"
+text = "☀️50%"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -113,20 +142,6 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
 text = "💧70"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="RaysBar" type="ProgressBar" parent="HUD/TopBar" unique_id=1755504018]
-custom_minimum_size = Vector2(72, 20)
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 1
-
-[node name="RaysLabel" type="Label" parent="HUD/TopBar" unique_id=716937143]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 1
-text = "☢️0"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -215,7 +230,6 @@ offset_right = -20.0
 grow_vertical = 2
 theme_override_font_sizes/normal_font_size = 15
 bbcode_enabled = true
-scroll_active = true
 
 [node name="Hand" type="Control" parent="." unique_id=854578857]
 anchors_preset = 0
@@ -266,8 +280,8 @@ anchor_bottom = 1.0
 offset_top = 331.0
 offset_right = -8.0
 offset_bottom = -308.6
-toggle_mode = true
 disabled = true
+toggle_mode = true
 text = "🛡️ Shelter (8⚡)"
 
 [node name="DownlinkButton" type="Button" parent="." unique_id=260333823]
@@ -303,8 +317,8 @@ anchor_bottom = 0.82
 offset_left = 24.0
 offset_top = 12.0
 offset_right = -24.0
-theme_override_font_sizes/normal_font_size = 19
 theme_override_constants/line_separation = 4
+theme_override_font_sizes/normal_font_size = 19
 bbcode_enabled = true
 
 [node name="NextSelButton" type="Button" parent="ReportOverlay" unique_id=914828546]

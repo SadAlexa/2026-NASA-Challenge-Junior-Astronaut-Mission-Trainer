@@ -79,7 +79,6 @@ func _build_content() -> String:
 
 	var rad: Dictionary = ref.get("radiation", {})
 	var apod: Dictionary = ref.get("apod", {})
-	var swpc: Dictionary = ref.get("space_weather", {})
 	var donki: Dictionary = GameState.donki_dataset
 	var counts: Dictionary = donki.get("counts", {})
 	var selected: Dictionary = donki.get("selected", {})
@@ -149,14 +148,6 @@ func _build_content() -> String:
 	else:
 		apod_lines = "APOD unavailable in this build.\n"
 
-	# --- NOAA SWPC ---
-	var kp := int(swpc.get("kp_index", 0))
-	var kp_time := str(swpc.get("time_tag", ""))
-	var swpc_lines := "Kp = %d (%s) at %s.\n" % [kp, _kp_description(kp), kp_time]
-	var swpc_url := str(swpc.get("url", ""))
-	if swpc_url != "":
-		swpc_lines += "[url=%s]NOAA SWPC data[/url]\n" % swpc_url
-
 	return """[center][b]🛰️ Real NASA Data Used[/b][/center]
 %s
 
@@ -166,22 +157,9 @@ func _build_content() -> String:
 %s
 [b]📷 APOD — Astronomy Picture of the Day[/b]
 %s
-[b]🌤️ Space weather at build time[/b] (NOAA SWPC, not NASA)
-%s
 [color=#9fd3ff][i]Numbers are simplified to a 0–100 scale to keep the game fun and intuitive; proportions are preserved. Game storms are drawn from real DONKI events, and no archived value is presented as live.[/i][/color]""" % [
 		archive_badge,
 		donki_lines,
 		radlab_lines,
 		apod_lines,
-		swpc_lines,
 	]
-
-
-func _kp_description(kp: int) -> String:
-	if kp >= 7:
-		return "severe storm"
-	elif kp >= 5:
-		return "geomagnetic storm"
-	elif kp == 4:
-		return "unsettled"
-	return "quiet"

@@ -1,10 +1,14 @@
 # Mission Selene — Junior Astronaut Mission Trainer 🌒🧑‍🚀
 
+> Mission Selene: the game title is named after the Ancient Greek goddess and personification of the Moon.
+
 A small, kid-friendly strategy game for the **2026 NASA Space Apps Challenge**
 ("Build a Junior Astronaut Mission Trainer"). You run a lunar outpost for ten
-24-hour shifts (*sels*) and must keep the crew alive while balancing life
+lunar revolutions (*sels*) and must keep the crew alive while balancing life
 support, radiation shielding, power, food production and communication with
 Earth.
+
+> Sel is a word that we invented (Sel -> Selene) for semplicity that represent a lunar revolution.
 
 ## Play
 
