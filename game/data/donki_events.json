@@ -1,145 +1,135 @@
-[
+{
+  "dataset": {
+	"name": "NASA DONKI - Solar Flares (FLR), Solar Energetic Particles (SEP), Coronal Mass Ejections (CME)",
+	"archived": true,
+	"retrieved": "2026-11-15",
+	"range": "2025-01-01..2026-11-15",
+	"source": "https://ccmc.gsfc.nasa.gov/tools/DONKI/",
+	"api": "https://api.nasa.gov/DONKI/",
+	"endpoint_used": "https://ccmc.gsfc.nasa.gov/DONKI-API/get/FLR?startDate=2025-01-01&endDate=2025-02-28",
+	"counts": {
+	  "flr": 814,
+	  "sep": 95,
+	  "cme": 3072
+	},
+	"selected": {
+	  "X": 4,
+	  "M": 2,
+	  "C": 2
+	},
+	"sample_sep": {
+	  "id": "2026-09-05T16:30:00-SEP-004",
+	  "event_time": "2026-09-05T16:30Z",
+	  "link": "https://ccmc.gsfc.nasa.gov/DONKI/view/SEP/48557/-1",
+	  "instruments": [
+        "MODEL: REleASE:ACE/EPAM 28.2-50.1 MeV"
+	  ]
+	},
+	"sample_cme": {
+	  "id": "2025-03-21T16:00:00-CME-001",
+	  "start_time": "2025-03-21T16:00Z",
+	  "source_location": "N02E07",
+	  "speed_km_s": 3032.0,
+	  "type": "ER"
+	},
+	"note": "Curated real DONKI events bundled at build time. Game radiation values are simplified 0-100 units defined in game/data/constants.gd, not physical units."
+  },
+  "events": [
 	{
-		"id": "2026-10-16T15:38:00-FLR-001",
-		"class": "M",
-		"date": "2026-10-16",
-		"peak": "M1.3",
-		"description": "M1.3 solar flare from Region 14551",
-		"radiation_bonus": 30,
-		"duration_sels": 2,
-		"panel_damage": -10,
-		"source": "NASA DONKI (CCMC/GSFC)"
+	  "id": "2025-05-25T16:18:00-FLR-001",
+	  "kind": "FLR",
+	  "class": "M",
+	  "peak_class": "M8.9",
+	  "begin_time": "2025-05-25T16:18Z",
+	  "peak_time": "2025-05-25T16:30Z",
+	  "end_time": "2025-05-25T16:36Z",
+	  "source_location": "S05W55",
+	  "active_region": 14098,
+	  "link": "https://ccmc.gsfc.nasa.gov/DONKI/view/FLR/39072/-1"
 	},
 	{
-		"id": "2026-10-19T08:54:00-FLR-001",
-		"class": "M",
-		"date": "2026-10-19",
-		"peak": "M1.6",
-		"description": "M1.6 solar flare from Region 14551",
-		"radiation_bonus": 30,
-		"duration_sels": 2,
-		"panel_damage": -10,
-		"source": "NASA DONKI (CCMC/GSFC)"
+	  "id": "2025-09-28T13:26:00-FLR-001",
+	  "kind": "FLR",
+	  "class": "C",
+	  "peak_class": "C9.9",
+	  "begin_time": "2025-09-28T13:26Z",
+	  "peak_time": "2025-09-28T13:31Z",
+	  "end_time": "2025-09-28T13:34Z",
+	  "source_location": "N17E54",
+	  "active_region": 14233,
+	  "link": "https://ccmc.gsfc.nasa.gov/DONKI/view/FLR/41468/-1"
 	},
 	{
-		"id": "2026-10-23T03:43:00-FLR-001",
-		"class": "C",
-		"date": "2026-10-23",
-		"peak": "C1.3",
-		"description": "C1.3 solar flare from Region 14557",
-		"radiation_bonus": 10,
-		"duration_sels": 1,
-		"panel_damage": 0,
-		"source": "NASA DONKI (CCMC/GSFC)"
+	  "id": "2025-11-11T09:49:00-FLR-001",
+	  "kind": "FLR",
+	  "class": "X",
+	  "peak_class": "X5.1",
+	  "begin_time": "2025-11-11T09:49Z",
+	  "peak_time": "2025-11-11T10:04Z",
+	  "end_time": "2025-11-11T10:17Z",
+	  "source_location": "N27W27",
+	  "active_region": 14274,
+	  "link": "https://ccmc.gsfc.nasa.gov/DONKI/view/FLR/42610/-1"
 	},
 	{
-		"id": "2026-10-26T08:21:00-FLR-001",
-		"class": "C",
-		"date": "2026-10-26",
-		"peak": "C1.9",
-		"description": "C1.9 solar flare from Region 14561",
-		"radiation_bonus": 10,
-		"duration_sels": 1,
-		"panel_damage": 0,
-		"source": "NASA DONKI (CCMC/GSFC)"
+	  "id": "2025-11-14T07:44:00-FLR-001",
+	  "kind": "FLR",
+	  "class": "X",
+	  "peak_class": "X4.0",
+	  "begin_time": "2025-11-14T07:44Z",
+	  "peak_time": "2025-11-14T08:30Z",
+	  "end_time": "2025-11-14T08:40Z",
+	  "source_location": "N24W71",
+	  "active_region": 14274,
+	  "link": "https://ccmc.gsfc.nasa.gov/DONKI/view/FLR/42702/-1"
 	},
 	{
-		"id": "2026-10-26T18:17:00-FLR-001",
-		"class": "C",
-		"date": "2026-10-26",
-		"peak": "C2.8",
-		"description": "C2.8 solar flare from Region 14561",
-		"radiation_bonus": 10,
-		"duration_sels": 1,
-		"panel_damage": 0,
-		"source": "NASA DONKI (CCMC/GSFC)"
+	  "id": "2025-11-19T09:29:00-FLR-001",
+	  "kind": "FLR",
+	  "class": "C",
+	  "peak_class": "C9.9",
+	  "begin_time": "2025-11-19T09:29Z",
+	  "peak_time": "2025-11-19T09:53Z",
+	  "end_time": "2025-11-19T10:12Z",
+	  "source_location": "N15E90",
+	  "active_region": 14288,
+	  "link": "https://ccmc.gsfc.nasa.gov/DONKI/view/FLR/42884/-1"
 	},
 	{
-		"id": "2026-11-05T18:21:00-FLR-001",
-		"class": "M",
-		"date": "2026-11-05",
-		"peak": "M3.5",
-		"description": "M3.5 solar flare from Region 14566",
-		"radiation_bonus": 30,
-		"duration_sels": 2,
-		"panel_damage": -10,
-		"source": "NASA DONKI (CCMC/GSFC)"
+	  "id": "2026-02-01T23:44:00-FLR-001",
+	  "kind": "FLR",
+	  "class": "X",
+	  "peak_class": "X8.1",
+	  "begin_time": "2026-02-01T23:44Z",
+	  "peak_time": "2026-02-01T23:57Z",
+	  "end_time": "2026-02-02T00:04Z",
+	  "source_location": "N13E35",
+	  "active_region": 14366,
+	  "link": "https://ccmc.gsfc.nasa.gov/DONKI/view/FLR/44361/-1"
 	},
 	{
-		"id": "2026-11-07T12:26:00-FLR-001",
-		"class": "M",
-		"date": "2026-11-07",
-		"peak": "M1.2",
-		"description": "M1.2 solar flare from Region 14566",
-		"radiation_bonus": 30,
-		"duration_sels": 2,
-		"panel_damage": -10,
-		"source": "NASA DONKI (CCMC/GSFC)"
+	  "id": "2026-02-04T12:02:00-FLR-001",
+	  "kind": "FLR",
+	  "class": "X",
+	  "peak_class": "X4.2",
+	  "begin_time": "2026-02-04T12:02Z",
+	  "peak_time": "2026-02-04T12:13Z",
+	  "end_time": "2026-02-04T12:18Z",
+	  "source_location": "N16E06",
+	  "active_region": 14366,
+	  "link": "https://ccmc.gsfc.nasa.gov/DONKI/view/FLR/44437/-1"
 	},
 	{
-		"id": "2026-11-07T17:11:00-FLR-001",
-		"class": "M",
-		"date": "2026-11-07",
-		"peak": "M1.4",
-		"description": "M1.4 solar flare from Region 14566",
-		"radiation_bonus": 30,
-		"duration_sels": 2,
-		"panel_damage": -10,
-		"source": "NASA DONKI (CCMC/GSFC)"
-	},
-	{
-		"id": "2026-11-07T18:21:00-FLR-001",
-		"class": "M",
-		"date": "2026-11-07",
-		"peak": "M1.9",
-		"description": "M1.9 solar flare from Region 14566",
-		"radiation_bonus": 30,
-		"duration_sels": 2,
-		"panel_damage": -10,
-		"source": "NASA DONKI (CCMC/GSFC)"
-	},
-	{
-		"id": "2026-11-08T07:33:00-FLR-001",
-		"class": "M",
-		"date": "2026-11-08",
-		"peak": "M1.7",
-		"description": "M1.7 solar flare from Region 14566",
-		"radiation_bonus": 30,
-		"duration_sels": 2,
-		"panel_damage": -10,
-		"source": "NASA DONKI (CCMC/GSFC)"
-	},
-	{
-		"id": "2026-11-08T15:29:00-FLR-001",
-		"class": "M",
-		"date": "2026-11-08",
-		"peak": "M1.1",
-		"description": "M1.1 solar flare from Region 14566",
-		"radiation_bonus": 30,
-		"duration_sels": 2,
-		"panel_damage": -10,
-		"source": "NASA DONKI (CCMC/GSFC)"
-	},
-	{
-		"id": "2026-11-08T18:15:00-FLR-001",
-		"class": "M",
-		"date": "2026-11-08",
-		"peak": "M1.1",
-		"description": "M1.1 solar flare from Region 14566",
-		"radiation_bonus": 30,
-		"duration_sels": 2,
-		"panel_damage": -10,
-		"source": "NASA DONKI (CCMC/GSFC)"
-	},
-	{
-		"id": "2026-11-11T21:06:00-FLR-001",
-		"class": "M",
-		"date": "2026-11-11",
-		"peak": "M1.7",
-		"description": "M1.7 solar flare from Region 14566",
-		"radiation_bonus": 30,
-		"duration_sels": 2,
-		"panel_damage": -10,
-		"source": "NASA DONKI (CCMC/GSFC)"
+	  "id": "2026-06-03T01:22:00-FLR-001",
+	  "kind": "FLR",
+	  "class": "M",
+	  "peak_class": "M9.3",
+	  "begin_time": "2026-06-03T01:22Z",
+	  "peak_time": "2026-06-03T01:36Z",
+	  "end_time": "2026-06-03T01:43Z",
+	  "source_location": "N13W10",
+	  "active_region": 14455,
+	  "link": "https://ccmc.gsfc.nasa.gov/DONKI/view/FLR/46582/-1"
 	}
-]
+  ]
+}
