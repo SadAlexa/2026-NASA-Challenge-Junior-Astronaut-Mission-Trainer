@@ -53,7 +53,7 @@ func say(text: String, mood: String = "happy") -> void:
 
 
 func add_line(text: String) -> void:
-	speech.text += "\n" + text
+	speech.text += "\n\n" + text
 
 
 func _on_close() -> void:

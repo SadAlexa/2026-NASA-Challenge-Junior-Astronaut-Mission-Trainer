@@ -1,10 +1,8 @@
 extends Node
 ## EventSystem — loads the build-time NASA DONKI archive and rolls crises.
-##
 ## No network access: DONKI data is embedded by tools/fetch_nasa_data.py.
-## Gameplay numbers come from Constants only; the archive supplies real event
-## identity (ID, class, date, link) so the UI can cite NASA.
 
+const _CONSTANTS := preload("res://data/constants.gd")
 const ARCHIVE_PATH := "res://data/donki_events.json"
 
 var donki_events: Array = []
@@ -18,7 +16,7 @@ func _ready() -> void:
 
 
 func set_seed(seed_text: String) -> void:
-	_rng.seed = Constants.hash_seed(seed_text + ":crisis")
+	_rng.seed = _CONSTANTS.hash_seed(seed_text + ":crisis")
 
 
 func load_archive() -> void:
@@ -28,26 +26,16 @@ func load_archive() -> void:
 	var file := FileAccess.open(ARCHIVE_PATH, FileAccess.READ)
 	if file == null:
 		push_error("EventSystem: cannot open %s" % ARCHIVE_PATH)
-		_use_builtin_fallback()
 		return
 
 	var parsed = JSON.parse_string(file.get_as_text())
 	file.close()
 
-	if typeof(parsed) == TYPE_ARRAY:
-		# Legacy schema: a bare array of events.
-		donki_events = parsed
-		dataset = {
-			"name": "NASA DONKI archive",
-			"archived": true,
-			"legacy": true,
-		}
-	elif typeof(parsed) == TYPE_DICTIONARY and parsed.has("events"):
+	if typeof(parsed) == TYPE_DICTIONARY and parsed.has("events"):
 		dataset = parsed.get("dataset", {})
 		donki_events = parsed.get("events", [])
 	else:
 		push_error("EventSystem: unexpected DONKI JSON schema")
-		_use_builtin_fallback()
 		return
 
 	_validate_archive()
@@ -70,22 +58,6 @@ func _validate_archive() -> void:
 	donki_events = valid
 	if donki_events.is_empty():
 		push_error("EventSystem: no valid DONKI events in archive")
-		_use_builtin_fallback()
-	GameState.donki_dataset = dataset
-
-
-func _use_builtin_fallback() -> void:
-	# The game must still boot if the archive is missing or empty.
-	donki_events = [
-		{"id": "fallback-C", "class": "C", "peak_class": "C1.0", "begin_time": ""},
-		{"id": "fallback-M", "class": "M", "peak_class": "M1.0", "begin_time": ""},
-		{"id": "fallback-X", "class": "X", "peak_class": "X1.0", "begin_time": ""},
-	]
-	dataset = {
-		"name": "Built-in fallback (archive unavailable)",
-		"archived": true,
-		"status": "fallback",
-	}
 	GameState.donki_dataset = dataset
 
 
@@ -93,11 +65,11 @@ func get_dataset_info() -> Dictionary:
 	return dataset
 
 
-# --- Crisis pool -----------------------------------------------------------
+# Crisis pool
 
 func roll_crisis() -> Dictionary:
 	"""Returns the crisis event dict, or {} for a clear sel."""
-	# Tutorial: no crises during the first two sels.
+	# No crises during the first two sels.
 	if GameState.sel <= 2:
 		return {}
 
@@ -119,7 +91,6 @@ func roll_crisis() -> Dictionary:
 	if roll < 0.80:
 		return _make_non_storm("micrometeoroid")
 	if GameState.o2_shield_sels > 0:
-		# "Check O2" preventive maintenance is active.
 		return _make_non_storm("micrometeoroid")
 	return _make_non_storm("o2_malfunction")
 
@@ -205,7 +176,7 @@ func _class_rbe_scale(cls: String) -> String:
 	return "R1"
 
 
-# --- Apply / tick ----------------------------------------------------------
+# Apply / tick
 
 func apply_crisis(event: Dictionary) -> void:
 	if event.is_empty():
@@ -257,7 +228,7 @@ func apply_crisis(event: Dictionary) -> void:
 
 
 func tick_storm() -> void:
-	"""Called at Dawn: decrement the remaining storm duration."""
+	"""Called at START: decrement the remaining storm duration."""
 	if GameState.active_storm.is_empty():
 		return
 	GameState.active_storm["sels_left"] = int(GameState.active_storm["sels_left"]) - 1
@@ -266,12 +237,12 @@ func tick_storm() -> void:
 
 
 func tick_o2_shield() -> void:
-	"""Called after the Dawn crisis roll, so the shield protects that Dawn."""
+	"""Called after the START crisis roll, so the shield protects that START."""
 	if GameState.o2_shield_sels > 0:
 		GameState.o2_shield_sels -= 1
 
 
 func end_sel() -> void:
-	"""Called at the end of the Night phase."""
+	"""Called at the end of the END_DAY phase."""
 	# An O2 machine malfunction affects exactly one sel unless repaired.
 	GameState.o2_malfunction = false

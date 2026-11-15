@@ -2,6 +2,8 @@ extends Node
 ## CardSystem — builds the deck, draws, plays, discards and reshuffles.
 ## The deck is rebuilt deterministically from the mission seed.
 
+const _CONSTANTS := preload("res://data/constants.gd")
+
 var cards_data: Array = []
 var _rng := RandomNumberGenerator.new()
 
@@ -25,7 +27,7 @@ func _load_cards() -> void:
 
 
 func build_deck(seed_str: String) -> void:
-	_rng.seed = Constants.hash_seed(seed_str + ":deck")
+	_rng.seed = _CONSTANTS.hash_seed(seed_str + ":deck")
 
 	var deck_arr: Array = []
 	for card in cards_data:

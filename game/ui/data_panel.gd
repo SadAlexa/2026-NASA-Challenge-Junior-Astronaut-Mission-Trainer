@@ -1,6 +1,6 @@
 extends Panel
-## Real Data Panel — child-friendly attribution of the build-time NASA snapshot.
-## All values are archived data embedded in the build; nothing is presented as live.
+## Data Panel — child-friendly attribution of the build-time NASA snapshot.
+## All values are archived data embedded in the build.
 
 @onready var content: RichTextLabel = $Content
 @onready var close_btn: Button = $CloseButton
@@ -10,8 +10,6 @@ var _apod_texture: Texture2D = null
 
 
 func _ready() -> void:
-	# The HUD is a CanvasLayer: give the panel its own opaque card so the
-	# game board cannot show through the text.
 	var style := StyleBoxFlat.new()
 	style.bg_color = Color(0.035, 0.045, 0.085, 0.99)
 	style.border_color = Color(0.35, 0.55, 0.9, 1.0)
@@ -59,11 +57,6 @@ func _load_apod_image() -> void:
 
 	if ResourceLoader.exists(path):
 		_apod_texture = load(path) as Texture2D
-	else:
-		# Fallback for a fresh checkout before the editor imports the JPG.
-		var img := Image.new()
-		if img.load(ProjectSettings.globalize_path(path)) == OK:
-			_apod_texture = ImageTexture.create_from_image(img)
 
 	if _apod_texture != null:
 		apod_image.texture = _apod_texture
@@ -86,7 +79,7 @@ func _build_content() -> String:
 	var retrieved := str(ref.get("retrieved", donki.get("retrieved", "?")))
 	var archive_badge := "[color=#ffd166][b]ARCHIVED NASA DATA[/b][/color] — retrieved %s" % retrieved
 
-	# --- DONKI ---
+	# DONKI
 	var donki_lines := ""
 	if not counts.is_empty():
 		donki_lines += "%d flares · %d SEP events · %d CMEs (%s)\n" % [
@@ -118,7 +111,7 @@ func _build_content() -> String:
 				str(ev.get("begin_time", "")).left(10),
 			]
 
-	# --- RadLab / OSDR ---
+	# RadLab / OSDR
 	var median := str(rad.get("median_uGy_h", "?"))
 	var absorbed := str(rad.get("absorbed_mGy_day", "?"))
 	var period := str(rad.get("period", ""))
@@ -132,7 +125,7 @@ func _build_content() -> String:
 	if radlink != "":
 		radlab_lines += "[url=%s]RadLab instrument page[/url]\n" % radlink
 
-	# --- APOD ---
+	# APOD
 	var apod_lines := ""
 	var apod_date := str(apod.get("date", ""))
 	var apod_title := str(apod.get("title", ""))
@@ -148,7 +141,7 @@ func _build_content() -> String:
 	else:
 		apod_lines = "APOD unavailable in this build.\n"
 
-	return """[center][b]🛰️ Real NASA Data Used[/b][/center]
+	return """
 %s
 
 [b]☀️ DONKI space weather[/b] (NASA CCMC)
@@ -157,7 +150,7 @@ func _build_content() -> String:
 %s
 [b]📷 APOD — Astronomy Picture of the Day[/b]
 %s
-[color=#9fd3ff][i]Numbers are simplified to a 0–100 scale to keep the game fun and intuitive; proportions are preserved. Game storms are drawn from real DONKI events, and no archived value is presented as live.[/i][/color]""" % [
+[color=#9fd3ff][i]Numbers are simplified to a 0–100 scale to keep the game fun and intuitive. Proportions are preserved.[/i][/color]""" % [
 		archive_badge,
 		donki_lines,
 		radlab_lines,

@@ -16,7 +16,6 @@ extends CanvasLayer
 
 
 func _ready() -> void:
-	# The top bar holds many values: keep it readable on a 1280x720 canvas.
 	for child in $TopBar.get_children():
 		if child is Label:
 			child.add_theme_font_size_override("font_size", 14)
@@ -37,7 +36,7 @@ func _update() -> void:
 	panels_label.text = "☀️%d%%" % int(GameState.panels)
 	energy_bar.modulate = _bar_color(GameState.battery)
 
-	# Life (show health as main bar)
+	# Life
 	life_bar.value = GameState.health
 	health_label.text = "❤️%d" % int(GameState.health)
 	o2_mini.text = "O₂:%d" % int(GameState.oxygen)

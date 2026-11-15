@@ -1,10 +1,9 @@
 extends Node
-## NightPhase — automatic production/consumption math for the Night phase.
-## All formulas mirror MISSION SELENE GDD §6 and are covered by tests/.
+## End Day Phase — automatic production/consumption math.
 
 
-func run_night() -> Dictionary:
-	"""Runs the night phase and returns a dict of *actual* deltas for the report."""
+func run_end_day() -> Dictionary:
+	"""Runs the end day phase and returns a dict of *actual* deltas for the report."""
 	var deltas: Dictionary = {
 		"panels": 0.0,
 		"battery": 0.0,
@@ -15,7 +14,6 @@ func run_night() -> Dictionary:
 		"sheltered": GameState.sheltered_this_sel,
 	}
 
-	# --- Panel decay (night dust deposition) ---
 	var panels_before := GameState.panels
 	GameState.panels = clampf(
 		GameState.panels + Constants.PANEL_DECAY_PER_SOL,
@@ -24,7 +22,7 @@ func run_night() -> Dictionary:
 	)
 	deltas["panels"] = GameState.panels - panels_before
 
-	# --- Energy: generation vs consumption ---
+	# Energy
 	var generation: float = round(Constants.PANEL_GENERATION_FACTOR * (GameState.panels / 100.0))
 	var base_consumption: float = Constants.BASE_CONSUMPTION - GameState.reduce_base_consumption
 	var net: float = generation - base_consumption
@@ -36,7 +34,7 @@ func run_night() -> Dictionary:
 	deltas["blackout"] = blackout
 	deltas["o2_malfunction"] = GameState.o2_malfunction and GameState.o2_shield_sels <= 0
 
-	# --- Oxygen ---
+	# Oxygen
 	var o2_prod: float
 	if GameState.o2_malfunction and GameState.o2_shield_sels <= 0:
 		o2_prod = 0.0
@@ -55,7 +53,7 @@ func run_night() -> Dictionary:
 	GameState.oxygen = clampf(GameState.oxygen + (o2_prod - o2_cons), 0.0, 100.0)
 	deltas["oxygen"] = GameState.oxygen - o2_before
 
-	# --- Food ---
+	# Food
 	var food_cons := Constants.FOOD_CONSUMPTION
 	if GameState.extra_sleep_played:
 		food_cons -= 2.0
@@ -67,7 +65,7 @@ func run_night() -> Dictionary:
 	GameState.food = clampf(GameState.food + (food_prod - food_cons), 0.0, 100.0)
 	deltas["food"] = GameState.food - food_before
 
-	# --- Water ---
+	# Water
 	var water_prod: float
 	if blackout:
 		water_prod = 0.0
@@ -80,7 +78,7 @@ func run_night() -> Dictionary:
 	GameState.water = clampf(GameState.water + (water_prod - Constants.WATER_CONSUMPTION), 0.0, 100.0)
 	deltas["water"] = GameState.water - water_before
 
-	# --- Health ---
+	# Health
 	var health_delta := 0.0
 
 	# Radiation damage (uses effective radiation, including shelter choice).
@@ -108,10 +106,8 @@ func run_night() -> Dictionary:
 	GameState.health = clampf(GameState.health + health_delta, 0.0, 100.0)
 	deltas["health"] = GameState.health - health_before
 
-	# --- Store deltas ---
-	GameState.night_deltas = deltas
+	GameState.end_day_deltas = deltas
 
-	# --- Record history (with real DONKI identity for the end report) ---
 	var storm_info: Dictionary = {}
 	if not GameState.active_storm.is_empty():
 		storm_info = {

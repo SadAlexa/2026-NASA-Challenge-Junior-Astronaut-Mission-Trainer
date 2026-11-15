@@ -1,12 +1,14 @@
 extends Node
 ## Game — phase state machine orchestrator.
 
-enum Phase { DAWN, DAY, NIGHT, REPORT }
+const _CONSTANTS := preload("res://data/constants.gd")
 
-var phase: Phase = Phase.DAWN
+enum Phase { START, GAME, END_DAY, REPORT }
+
+var phase: Phase = Phase.START
 var card_system: Node
 var event_system: Node
-var night_phase: Node
+var end_day_phase: Node
 var hud: CanvasLayer
 var hand_container: HBoxContainer
 var played_cards_container: HBoxContainer
@@ -28,7 +30,7 @@ var _science_note: String = ""
 func _ready() -> void:
 	card_system = $CardSystem
 	event_system = $EventSystem
-	night_phase = $NightPhase
+	end_day_phase = $NightPhase
 	hud = $HUD
 	hand_container = $Hand/CardRow
 	played_cards_container = $Board/PlayedCards
@@ -41,7 +43,7 @@ func _ready() -> void:
 	end_screen = $EndScreen
 	real_data_panel = $HUD/RealDataPanel
 
-	# Build-time NASA snapshot (no network at runtime).
+	# Build-time NASA snapshot.
 	nasa_manager = preload("res://space_weather_manager.gd").new()
 	nasa_manager.name = "SpaceWeatherManager"
 	nasa_manager.weather_loaded.connect(_on_weather_loaded)
@@ -52,7 +54,7 @@ func _ready() -> void:
 	real_data_btn.text = "🛰️ Data"
 	real_data_btn.custom_minimum_size = Vector2(72, 30)
 	real_data_btn.add_theme_font_size_override("font_size", 14)
-	real_data_btn.tooltip_text = "Real NASA data used by this game (archived at build time)"
+	real_data_btn.tooltip_text = "Real NASA data used by this game"
 	real_data_btn.pressed.connect(_on_real_data_pressed)
 	$HUD/TopBar.add_child(real_data_btn)
 
@@ -78,7 +80,7 @@ func start_new_game(seed_override: String = "") -> void:
 	$HUD.visible = true
 	end_day_button.disabled = false
 	_shelter_reset_ui()
-	phase = Phase.DAWN
+	phase = Phase.START
 	_start_dawn()
 
 
@@ -93,7 +95,7 @@ func _generate_seed() -> String:
 
 
 func _start_dawn() -> void:
-	phase = Phase.DAWN
+	phase = Phase.START
 	GameState.reset_per_sel()
 	_shelter_reset_ui()
 	end_day_button.disabled = false
@@ -113,7 +115,7 @@ func _start_dawn() -> void:
 	_announce_dawn()
 	_update_action_buttons()
 
-	phase = Phase.DAY
+	phase = Phase.GAME
 	_refresh_hand()
 	GameState.emit_changed()
 
@@ -187,7 +189,7 @@ func _announce_dawn() -> void:
 
 
 func _on_card_pressed(card: Dictionary) -> void:
-	if phase != Phase.DAY:
+	if phase != Phase.GAME:
 		return
 
 	var reasons: Array = card_system.can_play(card)
@@ -201,13 +203,13 @@ func _on_card_pressed(card: Dictionary) -> void:
 
 
 func _on_end_day() -> void:
-	if phase != Phase.DAY:
+	if phase != Phase.GAME:
 		return
 
 	card_system.discard_hand()
 
-	phase = Phase.NIGHT
-	var deltas: Dictionary = night_phase.run_night()
+	phase = Phase.END_DAY
+	var deltas: Dictionary = end_day_phase.run_night()
 	event_system.end_sel()
 	_update_action_buttons()
 
@@ -297,7 +299,7 @@ func _get_trivia() -> String:
 		"Did you know? The lunar south pole has 'peaks of eternal light' where the Sun almost never sets!",
 	]
 	# Derived from the mission seed so "retry this seed" replays the same texts.
-	var index := Constants.hash_seed(GameState.mission_seed + ":trivia:" + str(GameState.sel))
+	var index := _CONSTANTS.hash_seed(GameState.mission_seed + ":trivia:" + str(GameState.sel))
 	return trivia_list[index % trivia_list.size()]
 
 
@@ -346,17 +348,17 @@ func _update_action_buttons() -> void:
 
 	var storm_active := not GameState.active_storm.is_empty()
 	if GameState.sheltered_this_sel:
-		shelter_button.disabled = phase != Phase.DAY
+		shelter_button.disabled = phase != Phase.GAME
 		shelter_button.text = "🛡️ Shelter ON (%.0f⚡)" % Constants.SHELTER_COST
 	else:
-		shelter_button.disabled = phase != Phase.DAY \
+		shelter_button.disabled = phase != Phase.GAME \
 			or not storm_active \
 			or GameState.battery < Constants.SHELTER_COST
 		shelter_button.text = "🛡️ Shelter (%.0f⚡)" % Constants.SHELTER_COST
 	shelter_button.set_pressed_no_signal(GameState.sheltered_this_sel)
 
 	var pending := GameState.pending_science
-	downlink_button.disabled = phase != Phase.DAY or pending <= 0
+	downlink_button.disabled = phase != Phase.GAME or pending <= 0
 	if pending > 0 and GameState.pending_science_age < Constants.DOWNLINK_DELAY_SELS:
 		downlink_button.text = "📡 Packaging %d…" % pending
 	elif pending > 0 and not GameState.active_storm.is_empty():
@@ -371,7 +373,7 @@ func _shelter_reset_ui() -> void:
 
 
 func _on_shelter_toggled(pressed: bool) -> void:
-	if phase != Phase.DAY:
+	if phase != Phase.GAME:
 		shelter_button.set_pressed_no_signal(GameState.sheltered_this_sel)
 		return
 
@@ -405,7 +407,7 @@ func _on_shelter_toggled(pressed: bool) -> void:
 
 
 func _on_downlink_pressed() -> void:
-	if phase != Phase.DAY:
+	if phase != Phase.GAME:
 		return
 
 	if GameState.pending_science <= 0:
@@ -448,7 +450,7 @@ func say_lumi(text: String, mood: String = "happy") -> void:
 
 
 func is_day() -> bool:
-	return phase == Phase.DAY
+	return phase == Phase.GAME
 
 
 func _on_new_mission() -> void:
@@ -457,9 +459,9 @@ func _on_new_mission() -> void:
 
 
 func _on_retry_seed() -> void:
-	var seed := GameState.mission_seed
+	var game_seed := GameState.mission_seed
 	end_screen.visible = false
-	start_new_game(seed)
+	start_new_game(game_seed)
 
 
 func _on_weather_loaded(data: Dictionary) -> void:

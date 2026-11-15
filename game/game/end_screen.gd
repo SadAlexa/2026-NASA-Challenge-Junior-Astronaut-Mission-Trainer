@@ -138,7 +138,6 @@ func _data_sources() -> String:
 	)
 	if not apod.is_empty() and str(apod.get("date", "")) != "":
 		lines.append("APOD: %s — %s" % [str(apod.get("date", "")), str(apod.get("title", ""))])
-	lines.append("[i]Game values are simplified to a 0–100 scale; archived data is never presented as live.[/i]")
 	return "\n".join(lines)
 
 

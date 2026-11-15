@@ -1,5 +1,4 @@
 extends Node
-## Main — boot scene, loads Game.
 
 func _ready() -> void:
 	_install_emoji_fallback()
@@ -9,8 +8,6 @@ func _ready() -> void:
 
 
 func _install_emoji_fallback() -> void:
-	# Browsers have no system emoji font, so emoji would render as tofu boxes.
-	# On desktop, keep the platform's (usually colour) emoji font instead.
 	if not OS.has_feature("web"):
 		return
 	var emoji_font: Font = load("res://assets/fonts/NotoEmoji.ttf")

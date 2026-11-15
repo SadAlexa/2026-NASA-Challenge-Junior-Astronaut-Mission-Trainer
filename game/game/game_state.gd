@@ -18,7 +18,7 @@ var science: int = 0
 # Flags
 var greenhouse_expanded: bool = false
 var o2_shield_sels: int = 0
-var active_storm: Dictionary = {}  # { "class": "M", "sels_left": 2, "event_id": "" }
+var active_storm: Dictionary = {}
 var o2_malfunction: bool = false
 var strongest_storm: Dictionary = {}
 
@@ -45,13 +45,13 @@ var deck: Array = []
 var hand: Array = []
 var discard: Array = []
 var played_this_sel: Array = []
-var used_once_cards: Array = []  # card ids already used (once_per_mission)
+var used_once_cards: Array = []
 
 # History
 var history_log: Array = []
 
-# Night deltas for report
-var night_deltas: Dictionary = {}
+# END_DAY deltas for report
+var end_day_deltas: Dictionary = {}
 
 # Build-time NASA snapshot (see game/data/nasa_reference.json)
 var nasa_reference: Dictionary = {}
@@ -98,7 +98,7 @@ func reset() -> void:
 	played_this_sel = []
 	used_once_cards = []
 	history_log = []
-	night_deltas = {}
+	end_day_deltas = {}
 	radiation_mSv_day = Constants.LUNAR_SURFACE_MSV_DAY
 	game_over = false
 	victory = false
@@ -115,7 +115,7 @@ func reset_per_sel() -> void:
 	reduce_water_production_to = -1.0
 	sheltered_this_sel = false
 	played_this_sel = []
-	night_deltas = {}
+	end_day_deltas = {}
 
 
 func get_effective_radiation() -> float:
