@@ -7,7 +7,10 @@
 	"copies": 2,
 	"once_per_mission": false,
 	"cost_battery": 0,
-	"effects": { "health": 5, "oxygen": -6 },
+	"effects": {
+	  "health": 5,
+	  "oxygen": -6
+	},
 	"cancel_gravity_penalty": true,
 	"requires_no_storm": false,
 	"lumi_text": "On the Moon we weigh 6 times less than on Earth! Without 2 hours in the gym every day, muscles and bones get weak."
@@ -20,7 +23,9 @@
 	"copies": 1,
 	"once_per_mission": false,
 	"cost_battery": 0,
-	"effects": { "health": 3 },
+	"effects": {
+	  "health": 3
+	},
 	"requires_no_storm": false,
 	"lumi_text": "Even astronauts need to relax and look at Earth through the porthole to reduce stress!"
   },
@@ -32,7 +37,9 @@
 	"copies": 1,
 	"once_per_mission": false,
 	"cost_battery": 0,
-	"effects": { "health": 4 },
+	"effects": {
+	  "health": 4
+	},
 	"reduce_food_consumption": 2,
 	"requires_no_storm": false,
 	"lumi_text": "Sleeping well in space is essential for keeping your reflexes sharp during the mission."
@@ -45,7 +52,9 @@
 	"copies": 2,
 	"once_per_mission": false,
 	"cost_battery": 5,
-	"effects": { "panels": 25, "radiation": 15 },
+	"effects": {
+	  "panels": 25
+	},
 	"is_eva": true,
 	"requires_no_storm": true,
 	"lumi_text": "Lunar dust is called regolith: it sticks everywhere like magnetic sand and blocks sunlight from reaching our panels!"
@@ -58,7 +67,9 @@
 	"copies": 2,
 	"once_per_mission": false,
 	"cost_battery": 10,
-	"effects": { "panels": 30, "radiation": 15 },
+	"effects": {
+	  "panels": 30
+	},
 	"is_eva": true,
 	"requires_no_storm": true,
 	"requires_panels_below": 80,
@@ -101,7 +112,9 @@
 	"copies": 3,
 	"once_per_mission": false,
 	"cost_battery": 8,
-	"effects": { "food": 12 },
+	"effects": {
+	  "food": 12
+	},
 	"requires_no_storm": false,
 	"lumi_text": "LED lamps help space lettuce and radishes grow: they cost energy, but they give us fresh food!"
   },
@@ -126,7 +139,9 @@
 	"copies": 1,
 	"once_per_mission": false,
 	"cost_battery": 4,
-	"effects": { "science": 2 },
+	"effects": {
+	  "science": 2
+	},
 	"requires_no_storm": false,
 	"lumi_text": "Let's examine lunar rocks under the microscope: this data will help scientists back on Earth!"
   },
@@ -138,7 +153,10 @@
 	"copies": 1,
 	"once_per_mission": true,
 	"cost_battery": 6,
-	"effects": { "water": 15, "science": 3 },
+	"effects": {
+	  "water": 15,
+	  "science": 3
+	},
 	"requires_no_storm": false,
 	"lumi_text": "At the bottom of shadowed South Pole craters lies water ice billions of years old: we can melt and study it!"
   }

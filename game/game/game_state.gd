@@ -20,6 +20,15 @@ var greenhouse_expanded: bool = false
 var o2_shield_sels: int = 0
 var active_storm: Dictionary = {}  # { "class": "M", "sels_left": 2, "event_id": "" }
 var o2_malfunction: bool = false
+var strongest_storm: Dictionary = {}
+
+# Storm shelter (chosen during the Day, paid immediately)
+var sheltered_this_sel: bool = false
+
+# Science downlink: points wait for a communications window
+var pending_science: int = 0
+var pending_science_age: int = 0
+var science_last_delivery: int = 0
 
 # Per-sel flags (reset each sel)
 var exercise_played: bool = false
@@ -44,10 +53,11 @@ var history_log: Array = []
 # Night deltas for report
 var night_deltas: Dictionary = {}
 
-# Real space weather (NOAA SWPC / NASA)
+# Build-time NASA snapshot (see game/data/nasa_reference.json)
+var nasa_reference: Dictionary = {}
+var donki_dataset: Dictionary = {}
 var apod_data: Dictionary = {}
-var radiation_msV: float = 5.0
-var kp_index: int = 2
+var radiation_mSv_day: float = Constants.LUNAR_SURFACE_MSV_DAY
 
 # Game over
 var game_over: bool = false
@@ -69,6 +79,11 @@ func reset() -> void:
 	o2_shield_sels = 0
 	active_storm = {}
 	o2_malfunction = false
+	strongest_storm = {}
+	sheltered_this_sel = false
+	pending_science = 0
+	pending_science_age = 0
+	science_last_delivery = 0
 	exercise_played = false
 	extra_sleep_played = false
 	power_saving_played = false
@@ -84,6 +99,7 @@ func reset() -> void:
 	used_once_cards = []
 	history_log = []
 	night_deltas = {}
+	radiation_mSv_day = Constants.LUNAR_SURFACE_MSV_DAY
 	game_over = false
 	victory = false
 
@@ -97,20 +113,40 @@ func reset_per_sel() -> void:
 	reduce_base_consumption = 0
 	reduce_o2_production_to = -1.0
 	reduce_water_production_to = -1.0
+	sheltered_this_sel = false
 	played_this_sel = []
 	night_deltas = {}
 
 
 func get_effective_radiation() -> float:
-	var rad = radiation_base
+	var rad := radiation_base
 	if not active_storm.is_empty():
-		rad += active_storm.get("radiation_bonus", 0)
+		var bonus := float(active_storm.get("radiation_bonus", 0))
+		if sheltered_this_sel:
+			bonus *= Constants.SHELTER_RADIATION_REDUCTION
+		rad += bonus
 	rad += eva_count * Constants.EVA_RADIATION_BONUS
 	return rad
 
 
 func get_health_damage_from_radiation() -> int:
-	return ceil(get_effective_radiation() / 25.0)
+	return int(ceil(get_effective_radiation() / 25.0))
+
+
+func get_radiation_mSv_day() -> float:
+	var per_unit := Constants.RADIATION_GAME_TO_MSV_DAY
+	if radiation_mSv_day > 0.0:
+		per_unit = radiation_mSv_day / Constants.RADIATION_BASE
+	return get_effective_radiation() * per_unit
+
+
+func bank_pending_science() -> int:
+	var amount := pending_science
+	science += amount
+	pending_science = 0
+	pending_science_age = 0
+	science_last_delivery = amount
+	return amount
 
 
 func emit_changed() -> void:

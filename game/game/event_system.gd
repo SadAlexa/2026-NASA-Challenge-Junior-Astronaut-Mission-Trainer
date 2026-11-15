@@ -1,157 +1,277 @@
 extends Node
-## EventSystem — crisis roll at Dawn, storm tracking.
-## Fetches live solar flare data from NASA DONKI API.
+## EventSystem — loads the build-time NASA DONKI archive and rolls crises.
+##
+## No network access: DONKI data is embedded by tools/fetch_nasa_data.py.
+## Gameplay numbers come from Constants only; the archive supplies real event
+## identity (ID, class, date, link) so the UI can cite NASA.
 
-const DONKI_FLR_URL := "https://ccmc.gsfc.nasa.gov/DONKI-API/get/FLR"
+const ARCHIVE_PATH := "res://data/donki_events.json"
 
 var donki_events: Array = []
+var dataset: Dictionary = {}
+var _rng := RandomNumberGenerator.new()
 
 
 func _ready() -> void:
-	_fetch_donki()
+	_rng.randomize()
+	load_archive()
 
 
-func _fetch_donki() -> void:
-	var http := HTTPRequest.new()
-	add_child(http)
-	http.request_completed.connect(_on_donki_response.bind(http))
-	http.request(DONKI_FLR_URL)
+func set_seed(seed_text: String) -> void:
+	_rng.seed = Constants.hash_seed(seed_text + ":crisis")
 
 
-func _on_donki_response(result: int, code: int, _headers: PackedStringArray, body: PackedByteArray, http: HTTPRequest) -> void:
-	http.queue_free()
-	if result == HTTPRequest.RESULT_SUCCESS and code == 200:
-		var json = JSON.new()
-		if json.parse(body.get_string_from_utf8()) == OK and typeof(json.data) == TYPE_ARRAY:
-			var arr: Array = json.data
-			donki_events.clear()
-			for ev in arr:
-				var class_type: String = str(ev.get("classType", ""))
-				if class_type == "":
-					continue
-				var cls: String = class_type[0]  # C, M, or X
-				donki_events.append({
-					"id": str(ev.get("flrID", "")),
-					"class": cls,
-					"date": str(ev.get("beginTime", "")).left(10),
-					"peak": class_type,
-					"radiation_bonus": _class_radiation(cls),
-					"duration_sels": _class_duration(cls),
-					"panel_damage": _class_panel_damage(cls),
-				})
-			print("[EventSystem] Loaded %d DONKI flare events" % donki_events.size())
-			return
-	# Fallback to local file
-	_load_fallback()
+func load_archive() -> void:
+	donki_events = []
+	dataset = {}
+
+	var file := FileAccess.open(ARCHIVE_PATH, FileAccess.READ)
+	if file == null:
+		push_error("EventSystem: cannot open %s" % ARCHIVE_PATH)
+		_use_builtin_fallback()
+		return
+
+	var parsed = JSON.parse_string(file.get_as_text())
+	file.close()
+
+	if typeof(parsed) == TYPE_ARRAY:
+		# Legacy schema: a bare array of events.
+		donki_events = parsed
+		dataset = {
+			"name": "NASA DONKI archive",
+			"archived": true,
+			"legacy": true,
+		}
+	elif typeof(parsed) == TYPE_DICTIONARY and parsed.has("events"):
+		dataset = parsed.get("dataset", {})
+		donki_events = parsed.get("events", [])
+	else:
+		push_error("EventSystem: unexpected DONKI JSON schema")
+		_use_builtin_fallback()
+		return
+
+	_validate_archive()
+	print("[EventSystem] DONKI archive: %d events (%s)" % [
+		donki_events.size(), dataset.get("retrieved", "date unknown")
+	])
+
+
+func _validate_archive() -> void:
+	var valid: Array = []
+	for ev in donki_events:
+		if typeof(ev) != TYPE_DICTIONARY:
+			continue
+		var cls := str(ev.get("class", ""))
+		if cls not in ["C", "M", "X"]:
+			continue
+		if str(ev.get("id", "")) == "":
+			continue
+		valid.append(ev)
+	donki_events = valid
+	if donki_events.is_empty():
+		push_error("EventSystem: no valid DONKI events in archive")
+		_use_builtin_fallback()
+	GameState.donki_dataset = dataset
+
+
+func _use_builtin_fallback() -> void:
+	# The game must still boot if the archive is missing or empty.
+	donki_events = [
+		{"id": "fallback-C", "class": "C", "peak_class": "C1.0", "begin_time": ""},
+		{"id": "fallback-M", "class": "M", "peak_class": "M1.0", "begin_time": ""},
+		{"id": "fallback-X", "class": "X", "peak_class": "X1.0", "begin_time": ""},
+	]
+	dataset = {
+		"name": "Built-in fallback (archive unavailable)",
+		"archived": true,
+		"status": "fallback",
+	}
+	GameState.donki_dataset = dataset
+
+
+func get_dataset_info() -> Dictionary:
+	return dataset
+
+
+# --- Crisis pool -----------------------------------------------------------
+
+func roll_crisis() -> Dictionary:
+	"""Returns the crisis event dict, or {} for a clear sel."""
+	# Tutorial: no crises during the first two sels.
+	if GameState.sel <= 2:
+		return {}
+
+	# A storm is already active: only non-storm crises can happen.
+	if not GameState.active_storm.is_empty():
+		var pool: Array[String] = ["micrometeoroid"]
+		if GameState.o2_shield_sels <= 0:
+			pool.append("o2_malfunction")
+		if _rng.randf() < Constants.CRISIS_CHANCE:
+			return _make_non_storm(pool[_rng.randi_range(0, pool.size() - 1)])
+		return {}
+
+	if _rng.randf() >= Constants.CRISIS_CHANCE:
+		return {}  # Clear
+
+	var roll := _rng.randf()
+	if roll < 0.60:
+		return _make_storm()
+	if roll < 0.80:
+		return _make_non_storm("micrometeoroid")
+	if GameState.o2_shield_sels > 0:
+		# "Check O2" preventive maintenance is active.
+		return _make_non_storm("micrometeoroid")
+	return _make_non_storm("o2_malfunction")
+
+
+func _make_storm() -> Dictionary:
+	var cls := _pick_storm_class()
+	var ev := _pick_event(cls)
+	if ev.is_empty():
+		ev = _pick_event("")
+	if ev.is_empty():
+		return {}
+
+	return {
+		"type": "solar_storm",
+		"class": cls,
+		"radiation_bonus": _class_radiation(cls),
+		"duration_sels": Constants.STORM_DURATION,
+		"panel_damage": _class_panel_damage(cls),
+		"rbe_scale": _class_rbe_scale(cls),
+		"event_id": str(ev.get("id", "")),
+		"date": _event_date(ev),
+		"peak": str(ev.get("peak_class", "")),
+		"link": str(ev.get("link", "")),
+	}
+
+
+func _pick_storm_class() -> String:
+	var roll := _rng.randf()
+	var cumulative := 0.0
+	# Fixed order so the RNG stream is identical across runs.
+	for cls in ["C", "M", "X"]:
+		cumulative += float(Constants.STORM_CLASS_WEIGHTS.get(cls, 0.0))
+		if roll <= cumulative:
+			return cls
+	return "C"
+
+
+func _pick_event(cls: String) -> Dictionary:
+	var candidates: Array = []
+	for ev in donki_events:
+		if cls == "" or str(ev.get("class", "")) == cls:
+			candidates.append(ev)
+	if candidates.is_empty():
+		return {}
+	return candidates[_rng.randi_range(0, candidates.size() - 1)]
+
+
+func _make_non_storm(kind: String) -> Dictionary:
+	if kind == "o2_malfunction":
+		return {"type": "o2_malfunction"}
+	return {
+		"type": "micrometeoroid",
+		"panel_damage": Constants.MICROMETEOROID_PANEL_DAMAGE,
+	}
+
+
+func _event_date(ev: Dictionary) -> String:
+	var begin := str(ev.get("begin_time", ""))
+	if begin.length() >= 10:
+		return begin.left(10)
+	return begin
 
 
 func _class_radiation(cls: String) -> int:
 	match cls:
-		"C": return 10
-		"M": return 30
-		"X": return 60
-	return 10
+		"C": return Constants.STORM_C_RADIATION
+		"M": return Constants.STORM_M_RADIATION
+		"X": return Constants.STORM_X_RADIATION
+	return Constants.STORM_C_RADIATION
 
 
-func _class_duration(cls: String) -> int:
+func _class_panel_damage(cls: String) -> float:
+	if cls == "X":
+		return Constants.STORM_X_PANEL_DAMAGE
+	return 0.0
+
+
+func _class_rbe_scale(cls: String) -> String:
+	# NOAA radio-blackout scale: X flares reach R3-R5, M flares R2, C flares R1.
 	match cls:
-		"C": return 1
-		"M": return 2
-		"X": return 3
-	return 1
+		"X": return "R3"
+		"M": return "R2"
+	return "R1"
 
 
-func _class_panel_damage(cls: String) -> int:
-	match cls:
-		"C": return 0
-		"M": return -10
-		"X": return -10
-	return 0
-
-
-func _load_fallback() -> void:
-	var file = FileAccess.open("res://data/donki_events.json", FileAccess.READ)
-	if file:
-		donki_events = JSON.parse_string(file.get_as_text())
-		file.close()
-
-
-func roll_crisis() -> Dictionary:
-	"""Returns the crisis event dict (or empty for Clear)."""
-	
-	# No crises during tutorial sels 1-2
-	if GameState.sel <= 2:
-		return {}
-	
-	# If a storm is already active, no new storm
-	if not GameState.active_storm.is_empty():
-		# Can still get micrometeoroid or O2 malfunction
-		var non_storm_events = [
-			{"type": "micrometeoroid", "panel_damage": -30},
-			{"type": "o2_malfunction"}
-		]
-		if randf() < Constants.CRISIS_CHANCE:
-			return non_storm_events[randi() % non_storm_events.size()]
-		return {}
-	
-	var roll = randf()
-	if roll >= Constants.CRISIS_CHANCE:
-		return {}  # Clear
-	
-	# Pick a random DONKI event for storms, or micrometeoroid/O2
-	var event_type = randi() % 5
-	match event_type:
-		0, 1, 2:
-			# Solar storm — pick from DONKI events
-			var ev = donki_events[randi() % donki_events.size()]
-			return {
-				"type": "solar_storm",
-				"class": ev["class"],
-				"radiation_bonus": ev["radiation_bonus"],
-				"duration_sels": ev["duration_sels"],
-				"panel_damage": ev.get("panel_damage", 0),
-				"event_id": ev["id"],
-				"date": ev["date"],
-			}
-		3:
-			return {"type": "micrometeoroid", "panel_damage": -30}
-		4:
-			return {"type": "o2_malfunction"}
-	
-	return {}
-
+# --- Apply / tick ----------------------------------------------------------
 
 func apply_crisis(event: Dictionary) -> void:
 	if event.is_empty():
 		return
-	
+
 	match event.get("type", ""):
 		"solar_storm":
+			var radiation := int(event.get("radiation_bonus", Constants.STORM_C_RADIATION))
 			GameState.active_storm = {
-				"class": event["class"],
-				"sels_left": event["duration_sels"],
-				"radiation_bonus": event["radiation_bonus"],
+				"class": str(event.get("class", "C")),
+				"sels_left": int(event.get("duration_sels", Constants.STORM_DURATION)),
+				"radiation_bonus": radiation,
+				"rbe_scale": str(event.get("rbe_scale", "R1")),
 				"event_id": event.get("event_id", ""),
 				"date": event.get("date", ""),
+				"peak": event.get("peak", ""),
+				"link": event.get("link", ""),
 			}
-			if event.get("panel_damage", 0) < 0:
-				GameState.panels = clampf(GameState.panels + event["panel_damage"], Constants.PANEL_MIN, Constants.PANEL_MAX)
-		
+			if float(event.get("panel_damage", 0)) < 0.0:
+				GameState.panels = clampf(
+					GameState.panels + float(event.get("panel_damage", 0)),
+					Constants.PANEL_MIN,
+					Constants.PANEL_MAX
+				)
+			if GameState.strongest_storm.is_empty() \
+				or radiation > int(GameState.strongest_storm.get("radiation_bonus", 0)):
+				GameState.strongest_storm = {
+					"class": str(event.get("class", "C")),
+					"rbe_scale": str(event.get("rbe_scale", "R1")),
+					"peak": event.get("peak", ""),
+					"date": event.get("date", ""),
+					"event_id": event.get("event_id", ""),
+					"link": event.get("link", ""),
+					"radiation_bonus": radiation,
+					"sel": GameState.sel,
+				}
+
 		"micrometeoroid":
-			GameState.panels = clampf(GameState.panels + event.get("panel_damage", -30), Constants.PANEL_MIN, Constants.PANEL_MAX)
-		
+			GameState.panels = clampf(
+				GameState.panels + float(event.get("panel_damage", Constants.MICROMETEOROID_PANEL_DAMAGE)),
+				Constants.PANEL_MIN,
+				Constants.PANEL_MAX
+			)
+
 		"o2_malfunction":
 			GameState.o2_malfunction = true
 
+	GameState.emit_changed()
+
 
 func tick_storm() -> void:
-	"""Called at end of each sel to decrement storm duration."""
-	if not GameState.active_storm.is_empty():
-		GameState.active_storm["sels_left"] -= 1
-		if GameState.active_storm["sels_left"] <= 0:
-			GameState.active_storm = {}
+	"""Called at Dawn: decrement the remaining storm duration."""
+	if GameState.active_storm.is_empty():
+		return
+	GameState.active_storm["sels_left"] = int(GameState.active_storm["sels_left"]) - 1
+	if int(GameState.active_storm["sels_left"]) <= 0:
+		GameState.active_storm = {}
 
 
 func tick_o2_shield() -> void:
+	"""Called after the Dawn crisis roll, so the shield protects that Dawn."""
 	if GameState.o2_shield_sels > 0:
 		GameState.o2_shield_sels -= 1
+
+
+func end_sel() -> void:
+	"""Called at the end of the Night phase."""
+	# An O2 machine malfunction affects exactly one sel unless repaired.
+	GameState.o2_malfunction = false
