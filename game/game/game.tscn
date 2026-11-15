@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://x5pi7ximldkk" path="res://game/game.gd" id="1"]
 [ext_resource type="Script" uid="uid://bs55hdbulec48" path="res://game/card_system.gd" id="2"]
 [ext_resource type="Script" uid="uid://igxkamb4u23g" path="res://game/event_system.gd" id="3"]
-[ext_resource type="Script" uid="uid://n0k1evjegxm1" path="res://game/end_day_phase.gd" id="4"]
+[ext_resource type="Script" uid="uid://n0k1evjegxm1" path="res://game/end_sel_phase.gd" id="4"]
 [ext_resource type="Script" uid="uid://s4fqmb7dutnn" path="res://ui/hud.gd" id="5"]
 [ext_resource type="Script" uid="uid://bd86ur3worq87" path="res://ui/lumi_box.gd" id="6"]
 [ext_resource type="Script" uid="uid://c8wu1a0hrjx4a" path="res://game/end_screen.gd" id="7"]
@@ -40,7 +40,7 @@ script = ExtResource("2")
 [node name="EventSystem" type="Node" parent="." unique_id=401613893]
 script = ExtResource("3")
 
-[node name="EndDayPhase" type="Node" parent="." unique_id=1509210451]
+[node name="EndSelPhase" type="Node" parent="." unique_id=1509210451]
 script = ExtResource("4")
 
 [node name="HUD" type="CanvasLayer" parent="." unique_id=866805798]
@@ -244,7 +244,7 @@ anchor_right = 0.95
 anchor_bottom = 0.85
 bbcode_enabled = true
 text = "Welcome, Commander! Here are some tips:
-• Play up to 3 cards per day
+• Play up to 3 cards per sel
 • Keep your panels clean for more energy
 • Watch out for solar storms!"
 
@@ -304,7 +304,7 @@ offset_right = 1228.0
 theme_override_constants/separation = 20
 alignment = 1
 
-[node name="EndDayButton" type="Button" parent="." unique_id=260333821]
+[node name="EndSelButton" type="Button" parent="." unique_id=260333821]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.75600004
@@ -316,7 +316,7 @@ offset_right = -31.599976
 offset_bottom = -293.6
 mouse_default_cursor_shape = 2
 theme = ExtResource("10_3vho3")
-text = "☀️ End Day"
+text = "☀️ End Sel"
 
 [node name="ShelterButton" type="Button" parent="." unique_id=260333822]
 layout_mode = 1

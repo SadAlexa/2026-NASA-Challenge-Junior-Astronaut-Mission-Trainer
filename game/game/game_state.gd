@@ -22,7 +22,7 @@ var active_storm: Dictionary = {}
 var o2_malfunction: bool = false
 var strongest_storm: Dictionary = {}
 
-# Storm shelter (chosen during the Day, paid immediately)
+# Storm shelter (chosen during the Sel, paid immediately)
 var sheltered_this_sel: bool = false
 
 # Science downlink: points wait for a communications window
@@ -50,8 +50,8 @@ var used_once_cards: Array = []
 # History
 var history_log: Array = []
 
-# END_DAY deltas for report
-var end_day_deltas: Dictionary = {}
+# END_SEL deltas for report
+var end_sel_deltas: Dictionary = {}
 
 # Build-time NASA snapshot (see game/data/nasa_reference.json)
 var nasa_reference: Dictionary = {}
@@ -98,7 +98,7 @@ func reset() -> void:
 	played_this_sel = []
 	used_once_cards = []
 	history_log = []
-	end_day_deltas = {}
+	end_sel_deltas = {}
 	radiation_mSv_day = Constants.LUNAR_SURFACE_MSV_DAY
 	game_over = false
 	victory = false
@@ -115,7 +115,7 @@ func reset_per_sel() -> void:
 	reduce_water_production_to = -1.0
 	sheltered_this_sel = false
 	played_this_sel = []
-	end_day_deltas = {}
+	end_sel_deltas = {}
 
 
 func get_effective_radiation() -> float:

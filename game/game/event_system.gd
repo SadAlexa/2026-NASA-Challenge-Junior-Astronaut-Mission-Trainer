@@ -243,6 +243,6 @@ func tick_o2_shield() -> void:
 
 
 func end_sel() -> void:
-	"""Called at the end of the END_DAY phase."""
+	"""Called at the end of the END_SEL phase."""
 	# An O2 machine malfunction affects exactly one sel unless repaired.
 	GameState.o2_malfunction = false

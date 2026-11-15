@@ -3,15 +3,15 @@ extends Node
 
 const _CONSTANTS := preload("res://data/constants.gd")
 
-enum Phase { START, GAME, END_DAY, REPORT }
+enum Phase { START, GAME, END_SEL, REPORT }
 
 var phase: Phase = Phase.START
 var card_system: Node
 var event_system: Node
-var end_day_phase: Node
+var end_sel_phase: Node
 var hud: CanvasLayer
 var hand_container: HBoxContainer
-var end_day_button: Button
+var end_sel_button: Button
 var shelter_button: Button
 var downlink_button: Button
 var lumi_box: Panel
@@ -30,10 +30,10 @@ var _animating_hand := false
 func _ready() -> void:
 	card_system = $CardSystem
 	event_system = $EventSystem
-	end_day_phase = $EndDayPhase
+	end_sel_phase = $EndSelPhase
 	hud = $HUD
 	hand_container = $Hand/CardRow
-	end_day_button = $EndDayButton
+	end_sel_button = $EndSelButton
 	shelter_button = $ShelterButton
 	downlink_button = $DownlinkButton
 	lumi_box = $HUD/LumiBox
@@ -51,7 +51,7 @@ func _ready() -> void:
 	real_data_btn.pressed.connect(_on_real_data_pressed)
 
 	GameState.state_changed.connect(_on_state_changed)
-	end_day_button.pressed.connect(_on_end_day)
+	end_sel_button.pressed.connect(_on_end_sel)
 	shelter_button.toggled.connect(_on_shelter_toggled)
 	downlink_button.pressed.connect(_on_downlink_pressed)
 	$ReportOverlay/NextSelButton.pressed.connect(_on_next_sel)
@@ -70,7 +70,7 @@ func start_new_game(seed_override: String = "") -> void:
 	report_overlay.visible = false
 	end_screen.visible = false
 	$HUD.visible = true
-	end_day_button.disabled = false
+	end_sel_button.disabled = false
 	_shelter_reset_ui()
 	phase = Phase.START
 	_start_dawn()
@@ -90,7 +90,7 @@ func _start_dawn() -> void:
 	phase = Phase.START
 	GameState.reset_per_sel()
 	_shelter_reset_ui()
-	end_day_button.disabled = false
+	end_sel_button.disabled = false
 
 	# Expire the previous storm, then deliver any waiting science.
 	event_system.tick_storm()
@@ -132,7 +132,7 @@ func _announce_dawn() -> void:
 	if _crisis_event.is_empty():
 		if GameState.sel == 1:
 			lumi_box.say(
-				"Welcome, Commander! Pick up to 3 cards, then press End Day. Keep LIFE, ENERGY and RAYS in mind!",
+				"Welcome, Commander! Pick up to 3 cards, then press End Sel. Keep LIFE, ENERGY and RAYS in mind!",
 				"happy"
 			)
 		elif GameState.sel == 2:
@@ -199,14 +199,14 @@ func _on_card_pressed(card: Dictionary, card_node: Node = null) -> void:
 		say_lumi(str(reasons[0]), "curious")
 
 
-func _on_end_day() -> void:
+func _on_end_sel() -> void:
 	if phase != Phase.GAME:
 		return
 
 	card_system.discard_hand()
 
-	phase = Phase.END_DAY
-	var deltas: Dictionary = end_day_phase.run_end_day()
+	phase = Phase.END_SEL
+	var deltas: Dictionary = end_sel_phase.run_end_sel()
 	event_system.end_sel()
 	_update_action_buttons()
 
@@ -236,7 +236,7 @@ func _check_game_over() -> bool:
 
 func _show_report(deltas: Dictionary) -> void:
 	report_overlay.visible = true
-	end_day_button.disabled = true
+	end_sel_button.disabled = true
 	lumi_box.visible = false
 
 	var lines: Array[String] = []
@@ -288,7 +288,7 @@ func _get_trivia() -> String:
 	var trivia_list: Array[String] = [
 		"Did you know? The Moon has no atmosphere, so meteors hit the surface at full speed!",
 		"Did you know? Light takes about 1.3 seconds to travel from the Moon to Earth. That's our downlink delay!",
-		"Did you know? A 'sel' is used here for one 24-hour mission shift, from the word 'sol' (a solar day).",
+		"Did you know? A 'Sel' is used here for one Moon revolution. It's Sel from Selene, the ancient Greek Goddes",
 		"Did you know? Lunar dust (regolith) is electrostatic and sticks to everything, like magnetic sand!",
 		"Did you know? The Sun appears about 30% larger in the lunar sky than from Earth!",
 		"Did you know? NASA's CRaTER instrument on LRO measured about 5 µGy/h of radiation in lunar orbit.",
@@ -309,7 +309,7 @@ func _on_next_sel() -> void:
 
 
 func _show_end_screen() -> void:
-	end_day_button.disabled = true
+	end_sel_button.disabled = true
 	# The HUD is a CanvasLayer and would draw on top of the end screen.
 	$HUD.visible = false
 	end_screen.show_end()
@@ -446,7 +446,7 @@ func say_lumi(text: String, mood: String = "happy") -> void:
 	lumi_box.say(text, mood)
 
 
-func is_day() -> bool:
+func is_sel() -> bool:
 	return phase == Phase.GAME
 
 

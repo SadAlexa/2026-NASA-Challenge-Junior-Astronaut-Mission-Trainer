@@ -1,9 +1,9 @@
 extends Node
-## End Day Phase — automatic production/consumption math.
+## End Sel Phase — automatic production/consumption math.
 
 
-func run_end_day() -> Dictionary:
-	"""Runs the end day phase and returns a dict of *actual* deltas for the report."""
+func run_end_sel() -> Dictionary:
+	"""Runs the end sel phase and returns a dict of *actual* deltas for the report."""
 	var deltas: Dictionary = {
 		"panels": 0.0,
 		"battery": 0.0,
@@ -106,7 +106,7 @@ func run_end_day() -> Dictionary:
 	GameState.health = clampf(GameState.health + health_delta, 0.0, 100.0)
 	deltas["health"] = GameState.health - health_before
 
-	GameState.end_day_deltas = deltas
+	GameState.end_sel_deltas = deltas
 
 	var storm_info: Dictionary = {}
 	if not GameState.active_storm.is_empty():

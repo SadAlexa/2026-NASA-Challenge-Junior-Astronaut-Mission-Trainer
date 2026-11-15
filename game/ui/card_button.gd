@@ -161,7 +161,7 @@ func _set_locked(is_locked: bool) -> void:
 
 func _on_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-		if game_ref and game_ref.is_day():
+		if game_ref and game_ref.is_sel():
 			game_ref._on_card_pressed(card_data, self)
 
 
