@@ -123,13 +123,15 @@ func _deliver_science_at_dawn() -> void:
 	if GameState.pending_science <= 0:
 		return
 
+	# Data needs one sel to be packaged, then a clear radio window to be sent.
 	GameState.pending_science_age += 1
-	if GameState.pending_science_age >= Constants.DOWNLINK_DELAY_SELS \
-		and GameState.active_storm.is_empty():
-		var amount := GameState.bank_pending_science()
-		_science_note = "📡 Downlink window open: %d science point(s) arrived from the outpost." % amount
-	else:
-		_science_note = "📡 %d science point(s) are waiting for a radio window (storm delay)." % GameState.pending_science
+	if not GameState.active_storm.is_empty():
+		_science_note = "📡 Radio blackout %s: %d science point(s) are stuck at the outpost." % [
+			str(GameState.active_storm.get("rbe_scale", "R1")),
+			GameState.pending_science,
+		]
+	elif GameState.pending_science_age >= Constants.DOWNLINK_DELAY_SELS:
+		_science_note = "📡 %d science point(s) are ready to downlink." % GameState.pending_science
 
 
 func _announce_dawn() -> void:
@@ -355,7 +357,12 @@ func _update_action_buttons() -> void:
 
 	var pending := GameState.pending_science
 	downlink_button.disabled = phase != Phase.DAY or pending <= 0
-	downlink_button.text = "📡 Downlink %d (%.0f⚡)" % [pending, Constants.DOWNLINK_COST]
+	if pending > 0 and GameState.pending_science_age < Constants.DOWNLINK_DELAY_SELS:
+		downlink_button.text = "📡 Packaging %d…" % pending
+	elif pending > 0 and not GameState.active_storm.is_empty():
+		downlink_button.text = "📡 Lost signal (%d)" % pending
+	else:
+		downlink_button.text = "📡 Downlink %d (%.0f⚡)" % [pending, Constants.DOWNLINK_COST]
 
 
 func _shelter_reset_ui() -> void:
@@ -403,6 +410,12 @@ func _on_downlink_pressed() -> void:
 
 	if GameState.pending_science <= 0:
 		say_lumi("No new science data to send right now.", "curious")
+		return
+	if GameState.pending_science_age < Constants.DOWNLINK_DELAY_SELS:
+		say_lumi(
+			"The data is still being packaged. The next comm window opens tomorrow!",
+			"curious"
+		)
 		return
 	if not GameState.active_storm.is_empty():
 		say_lumi(

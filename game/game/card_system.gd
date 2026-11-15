@@ -117,9 +117,10 @@ func play_card(card: Dictionary) -> void:
 				# EVA exposure is modeled through is_eva + EVA_RADIATION_BONUS.
 				pass
 			"science":
-				# Data waits for a downlink window (communication delay).
+				# Data waits for the next downlink window (communication delay).
+				if GameState.pending_science <= 0:
+					GameState.pending_science_age = 0
 				GameState.pending_science += int(value)
-				GameState.pending_science_age = 0
 
 	# Special flags.
 	if card.get("cancel_gravity_penalty", false):

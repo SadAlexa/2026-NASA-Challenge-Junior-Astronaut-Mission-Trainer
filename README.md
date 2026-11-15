@@ -13,7 +13,7 @@ Earth.
 | **Play a card** | Spend battery to produce food/water, repair panels, exercise or collect science. Up to 3 cards per sel. |
 | **☀️ End Day** | Run the night: panels decay, batteries charge/drain, oxygen/food/water tick, radiation and low gravity affect health. |
 | **🛡️ Shelter** | During a solar storm, spend 8 battery to halve the storm's radiation bonus for that night. |
-| **📡 Downlink** | Send waiting science points to Earth for 4 battery. Storms cause radio blackouts, so you may have to wait. |
+| **📡 Downlink** | Send waiting science points to Earth for 4 battery. New data needs one sel to be packaged, and storms cause radio blackouts, so you may have to wait. |
 | **🛰️ Data** | Shows every real NASA source used, with links and the archived retrieval date. |
 
 You win by surviving all ten sels with oxygen, food and water above zero. The
