@@ -44,6 +44,11 @@ var history_log: Array = []
 # Night deltas for report
 var night_deltas: Dictionary = {}
 
+# Real space weather (NOAA SWPC / NASA)
+var apod_data: Dictionary = {}
+var radiation_msV: float = 5.0
+var kp_index: int = 2
+
 # Game over
 var game_over: bool = false
 var victory: bool = false

@@ -106,8 +106,8 @@ func _update_effects() -> void:
 
 func _add_effect_label(icon: String, value: int) -> void:
 	var lbl := Label.new()
-	var sign = "+" if value > 0 else ""
-	lbl.text = "%s %s%d" % [icon, sign, value]
+	var prefix = "+" if value > 0 else ""
+	lbl.text = "%s %s%d" % [icon, prefix, value]
 	lbl.add_theme_font_size_override("font_size", 13)
 	if value > 0:
 		lbl.add_theme_color_override("font_color", Color(0.4, 1.0, 0.4))

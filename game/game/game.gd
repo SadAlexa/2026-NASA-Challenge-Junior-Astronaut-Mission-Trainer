@@ -16,6 +16,9 @@ var sel_label: Label
 var report_overlay: Control
 
 var _crisis_event: Dictionary = {}
+var apod_manager: Node
+var real_data_btn: Button
+var real_data_panel: Control
 
 
 func _ready() -> void:
@@ -29,6 +32,23 @@ func _ready() -> void:
 	lumi_box = $HUD/LumiBox
 	sel_label = $HUD/TopBar/SolCounter
 	report_overlay = $ReportOverlay
+	
+	# Space Weather Manager (real NOAA/NASA data)
+	apod_manager = preload("res://space_weather_manager.gd").new()
+	apod_manager.name = "SpaceWeather"
+	add_child(apod_manager)
+	apod_manager.weather_loaded.connect(_on_weather_loaded)
+	
+	# Real Data panel (scene node)
+	real_data_panel = $HUD/RealDataPanel
+	
+	# Real Data button
+	real_data_btn = Button.new()
+	real_data_btn.text = "🛰️ Data"
+	real_data_btn.custom_minimum_size = Vector2(80, 36)
+	real_data_btn.position = Vector2(10, 55)
+	real_data_btn.pressed.connect(_on_real_data_pressed)
+	add_child(real_data_btn)
 	
 	GameState.state_changed.connect(_on_state_changed)
 	end_day_button.pressed.connect(_on_end_day)
@@ -82,10 +102,10 @@ func _start_dawn() -> void:
 func _announce_dawn() -> void:
 	var lumi = $HUD/LumiBox
 	if _crisis_event.is_empty():
-		if GameState.sel <= 2:
+		if GameState.sel == 1:
 			lumi.say("Welcome, Commander! Let's learn the ropes. Play up to 3 cards, then end the day!", "happy")
 		else:
-			lumi.say("Calm space weather today, Commander! Great time to do some maintenance.", "happy")
+			lumi.visible = false
 	elif _crisis_event.get("type") == "solar_storm":
 		var cls = _crisis_event["class"]
 		match cls:
@@ -234,3 +254,19 @@ func _refresh_hand() -> void:
 
 func _on_state_changed() -> void:
 	pass  # HUD handles its own updates via signal
+
+
+func _on_weather_loaded(data: Dictionary) -> void:
+	apod_manager.set_meta("data", data)
+	GameState.apod_data = data  # Keep for backward compat
+	GameState.radiation_msV = data.get("radiation_msV", 5.0)
+	GameState.kp_index = data.get("kp_index", 2)
+	if real_data_panel and real_data_panel.visible:
+		real_data_panel.update_data()
+
+
+func _on_real_data_pressed() -> void:
+	if real_data_panel.visible:
+		real_data_panel.visible = false
+	else:
+		real_data_panel.show_panel()

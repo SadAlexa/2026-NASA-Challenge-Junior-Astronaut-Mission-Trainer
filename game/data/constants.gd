@@ -27,15 +27,23 @@ const CRISIS_PENALTY_PER_RESOURCE := -5.0
 # Panel generation
 const PANEL_GENERATION_FACTOR := 30.0
 
-# Storms
-const STORM_C_RADIATION := 15
-const STORM_M_RADIATION := 35
-const STORM_X_RADIATION := 60
+# Storms (game units → real mSv in comments)
+const STORM_C_RADIATION := 15   # ≈ +0.5 mSv
+const STORM_M_RADIATION := 35   # ≈ +1.25 mSv
+const STORM_X_RADIATION := 60   # ≈ +2.25 mSv
 const STORM_DURATION    := 2
 const STORM_X_PANEL_DAMAGE := -10.0
 
 # EVA
-const EVA_RADIATION_BONUS := 15
+const EVA_RADIATION_BONUS := 15  # ≈ +0.5 mSv
+
+# Real radiation values (RadLab/OSDR — lunar surface)
+const RADIATION_BASE_MSv   := 5.0    # mSv/hr ambient (CRaTER-D1D2 baseline)
+const STORM_C_MSv          := 0.5    # mSv/hr additional during C-class SEP
+const STORM_M_MSv          := 1.25   # mSv/hr additional during M-class SEP
+const STORM_X_MSv          := 2.25   # mSv/hr additional during X-class/CME
+const EVA_MSv              := 0.5    # mSv/hr per EVA (unshielded exposure)
+const RADIATION_GAME_TO_MSv := 0.075  # conversion: game_units * factor = mSv
 
 # Scoring
 const SCORE_WEIGHT_O2   := 0.5

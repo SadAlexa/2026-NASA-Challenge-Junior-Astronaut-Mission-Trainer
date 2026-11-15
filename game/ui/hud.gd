@@ -38,10 +38,11 @@ func _update() -> void:
 	# Color coding
 	life_bar.modulate = _bar_color(GameState.health)
 	
-	# Rays
+	# Rays (game units + real mSv from NOAA)
 	var rad = GameState.get_effective_radiation()
 	rays_bar.value = minf(rad, 100.0)
-	rays_label.text = "☢️%d" % int(rad)
+	var msV = GameState.radiation_msV
+	rays_label.text = "☢️%d (%.1f mSv/hr)" % [int(rad), msV]
 	rays_bar.modulate = Color(0.7, 0.3, 0.9) if rad > 35 else Color(0.6, 0.5, 0.8)
 	
 	# Science

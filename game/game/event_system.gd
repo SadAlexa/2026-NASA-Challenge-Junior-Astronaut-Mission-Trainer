@@ -1,14 +1,75 @@
 extends Node
 ## EventSystem — crisis roll at Dawn, storm tracking.
+## Fetches live solar flare data from NASA DONKI API.
+
+const DONKI_FLR_URL := "https://ccmc.gsfc.nasa.gov/DONKI-API/get/FLR"
 
 var donki_events: Array = []
 
 
 func _ready() -> void:
-	_load_events()
+	_fetch_donki()
 
 
-func _load_events() -> void:
+func _fetch_donki() -> void:
+	var http := HTTPRequest.new()
+	add_child(http)
+	http.request_completed.connect(_on_donki_response.bind(http))
+	http.request(DONKI_FLR_URL)
+
+
+func _on_donki_response(result: int, code: int, _headers: PackedStringArray, body: PackedByteArray, http: HTTPRequest) -> void:
+	http.queue_free()
+	if result == HTTPRequest.RESULT_SUCCESS and code == 200:
+		var json = JSON.new()
+		if json.parse(body.get_string_from_utf8()) == OK and typeof(json.data) == TYPE_ARRAY:
+			var arr: Array = json.data
+			donki_events.clear()
+			for ev in arr:
+				var class_type: String = str(ev.get("classType", ""))
+				if class_type == "":
+					continue
+				var cls: String = class_type[0]  # C, M, or X
+				donki_events.append({
+					"id": str(ev.get("flrID", "")),
+					"class": cls,
+					"date": str(ev.get("beginTime", "")).left(10),
+					"peak": class_type,
+					"radiation_bonus": _class_radiation(cls),
+					"duration_sels": _class_duration(cls),
+					"panel_damage": _class_panel_damage(cls),
+				})
+			print("[EventSystem] Loaded %d DONKI flare events" % donki_events.size())
+			return
+	# Fallback to local file
+	_load_fallback()
+
+
+func _class_radiation(cls: String) -> int:
+	match cls:
+		"C": return 10
+		"M": return 30
+		"X": return 60
+	return 10
+
+
+func _class_duration(cls: String) -> int:
+	match cls:
+		"C": return 1
+		"M": return 2
+		"X": return 3
+	return 1
+
+
+func _class_panel_damage(cls: String) -> int:
+	match cls:
+		"C": return 0
+		"M": return -10
+		"X": return -10
+	return 0
+
+
+func _load_fallback() -> void:
 	var file = FileAccess.open("res://data/donki_events.json", FileAccess.READ)
 	if file:
 		donki_events = JSON.parse_string(file.get_as_text())
