@@ -28,6 +28,8 @@ const EFFECT_ICONS: Dictionary = {
 
 func _ready() -> void:
 	lock_overlay.color = Color(0, 0, 0, 0.5)
+	# Let clicks through so a locked card can still explain why it is locked.
+	lock_overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	gui_input.connect(_on_gui_input)
 	_create_info_button()
 	_create_effects_area()
@@ -99,9 +101,13 @@ func _update_effects() -> void:
 	var effects: Dictionary = card_data.get("effects", {})
 	
 	for key in effects:
-		var val = effects[key]
-		var icon = EFFECT_ICONS.get(key, "•")
+		var val: int = int(effects[key])
+		var icon: String = EFFECT_ICONS.get(key, "•")
 		_add_effect_label(icon, val)
+
+	# EVA outings add radiation even when the card itself has no radiation effect.
+	if bool(card_data.get("is_eva", false)):
+		_add_effect_label("☢", Constants.EVA_RADIATION_BONUS)
 
 
 func _add_effect_label(icon: String, value: int) -> void:
@@ -129,16 +135,14 @@ func _update_lock() -> void:
 
 func _on_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-		if game_ref and game_ref.phase == 1:  # Phase.DAY
+		if game_ref and game_ref.is_day():
 			game_ref._on_card_pressed(card_data)
 
 
 func _on_info_pressed() -> void:
 	if game_ref == null:
 		return
-	var lumi = game_ref.get_node("HUD/LumiBox")
-	lumi.visible = true
 	var desc = card_data.get("lumi_text", "No description available.")
 	var card_name = card_data.get("name", "?")
 	var icon = card_data.get("icon", "❓")
-	lumi.say("%s %s\n\n%s" % [icon, card_name, desc], "curious")
+	game_ref.say_lumi("%s %s\n\n%s" % [icon, card_name, desc], "curious")

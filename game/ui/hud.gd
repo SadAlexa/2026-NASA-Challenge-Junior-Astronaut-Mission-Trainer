@@ -16,37 +16,51 @@ extends CanvasLayer
 
 
 func _ready() -> void:
+	# The top bar holds many values: keep it readable on a 1280x720 canvas.
+	for child in $TopBar.get_children():
+		if child is Label:
+			child.add_theme_font_size_override("font_size", 14)
 	GameState.state_changed.connect(_update)
 	_update()
 
 
 func _update() -> void:
-	sel_label.text = "Sel %d/%d" % [GameState.sel, Constants.TOTAL_SOLS]
-	
+	var seed_text := GameState.mission_seed
+	if seed_text == "":
+		sel_label.text = "Sel %d/%d" % [GameState.sel, Constants.TOTAL_SOLS]
+	else:
+		sel_label.text = "Sel %d/%d · %s" % [GameState.sel, Constants.TOTAL_SOLS, seed_text]
+
 	# Energy
 	energy_bar.value = GameState.battery
-	energy_label.text = "%d" % int(GameState.battery)
+	energy_label.text = "🔋%d" % int(GameState.battery)
 	panels_label.text = "☀️%d%%" % int(GameState.panels)
-	
+	energy_bar.modulate = _bar_color(GameState.battery)
+
 	# Life (show health as main bar)
 	life_bar.value = GameState.health
 	health_label.text = "❤️%d" % int(GameState.health)
 	o2_mini.text = "O₂:%d" % int(GameState.oxygen)
 	food_mini.text = "🌱%d" % int(GameState.food)
 	water_mini.text = "💧%d" % int(GameState.water)
-	
-	# Color coding
 	life_bar.modulate = _bar_color(GameState.health)
-	
-	# Rays (game units + real mSv from NOAA)
-	var rad = GameState.get_effective_radiation()
+
+	# Rays: game units + the real lunar-surface equivalent.
+	var rad := GameState.get_effective_radiation()
 	rays_bar.value = minf(rad, 100.0)
-	var msV = GameState.radiation_msV
-	rays_label.text = "☢️%d (%.1f mSv/hr)" % [int(rad), msV]
+	var per_unit := Constants.RADIATION_GAME_TO_MSV_DAY
+	if GameState.radiation_mSv_day > 0.0:
+		per_unit = GameState.radiation_mSv_day / Constants.RADIATION_BASE
+	rays_label.text = "☢ %d · %.1f mSv/d" % [int(rad), rad * per_unit]
+	if GameState.sheltered_this_sel:
+		rays_label.text += " 🛡️"
 	rays_bar.modulate = Color(0.7, 0.3, 0.9) if rad > 35 else Color(0.6, 0.5, 0.8)
-	
-	# Science
-	science_badge.text = "🔬 %d" % GameState.science
+
+	# Science (banked + waiting for a downlink)
+	if GameState.pending_science > 0:
+		science_badge.text = "🔬 %d (+%d📡)" % [GameState.science, GameState.pending_science]
+	else:
+		science_badge.text = "🔬 %d" % GameState.science
 
 
 func _bar_color(val: float) -> Color:

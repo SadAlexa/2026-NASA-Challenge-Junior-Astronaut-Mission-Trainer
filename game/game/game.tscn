@@ -42,7 +42,7 @@ anchor_right = 1.0
 offset_bottom = 50.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_constants/separation = 16
+theme_override_constants/separation = 6
 alignment = 1
 
 [node name="PaddingRight" type="Panel" parent="HUD/TopBar" unique_id=1644673532]
@@ -52,12 +52,12 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
-text = "Sel 1/30"
+text = "Sel 1/10"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="EnergyBar" type="ProgressBar" parent="HUD/TopBar" unique_id=955235882]
-custom_minimum_size = Vector2(100, 20)
+custom_minimum_size = Vector2(72, 20)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
@@ -79,7 +79,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="LifeBar" type="ProgressBar" parent="HUD/TopBar" unique_id=1081979223]
-custom_minimum_size = Vector2(100, 20)
+custom_minimum_size = Vector2(72, 20)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
@@ -117,7 +117,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="RaysBar" type="ProgressBar" parent="HUD/TopBar" unique_id=1755504018]
-custom_minimum_size = Vector2(100, 20)
+custom_minimum_size = Vector2(72, 20)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
@@ -177,10 +177,10 @@ text = "Welcome, Commander! Here are some tips:
 [node name="RealDataPanel" type="Panel" parent="HUD" unique_id=365252259]
 visible = false
 anchors_preset = -1
-anchor_left = 0.15
-anchor_top = 0.1
-anchor_right = 0.85
-anchor_bottom = 0.7
+anchor_left = 0.08
+anchor_top = 0.085
+anchor_right = 0.92
+anchor_bottom = 0.97
 script = ExtResource("8")
 
 [node name="CloseButton" type="Button" parent="HUD/RealDataPanel" unique_id=1366374778]
@@ -196,9 +196,10 @@ text = "✕"
 
 [node name="ApodImage" type="TextureRect" parent="HUD/RealDataPanel" unique_id=1454176314]
 layout_mode = 0
-anchor_top = 0.05
-anchor_right = 1.0
-anchor_bottom = 0.55
+anchor_left = 0.05
+anchor_top = 0.03
+anchor_right = 0.95
+anchor_bottom = 0.33
 grow_horizontal = 2
 grow_vertical = 2
 expand_mode = 1
@@ -206,13 +207,15 @@ stretch_mode = 5
 
 [node name="Content" type="RichTextLabel" parent="HUD/RealDataPanel" unique_id=831990767]
 layout_mode = 0
-anchor_top = 0.6
+anchor_top = 0.35
 anchor_right = 1.0
-anchor_bottom = 0.95
-offset_left = 8.0
-offset_right = -8.0
+anchor_bottom = 0.97
+offset_left = 20.0
+offset_right = -20.0
 grow_vertical = 2
+theme_override_font_sizes/normal_font_size = 15
 bbcode_enabled = true
+scroll_active = true
 
 [node name="Hand" type="Control" parent="." unique_id=854578857]
 anchors_preset = 0
@@ -254,26 +257,62 @@ offset_right = -31.599976
 offset_bottom = -308.6
 text = "☀️ End Day"
 
+[node name="ShelterButton" type="Button" parent="." unique_id=260333822]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.52
+anchor_right = 0.75
+anchor_bottom = 1.0
+offset_top = 331.0
+offset_right = -8.0
+offset_bottom = -308.6
+toggle_mode = true
+disabled = true
+text = "🛡️ Shelter (8⚡)"
+
+[node name="DownlinkButton" type="Button" parent="." unique_id=260333823]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.28
+anchor_right = 0.51
+anchor_bottom = 1.0
+offset_top = 331.0
+offset_right = -8.0
+offset_bottom = -308.6
+disabled = true
+text = "📡 Downlink 0 (4⚡)"
+
 [node name="ReportOverlay" type="Control" parent="." unique_id=16395869]
 visible = false
 anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 
+[node name="Bg" type="ColorRect" parent="ReportOverlay" unique_id=16395870]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.02, 0.02, 0.06, 0.94)
+
 [node name="ReportText" type="RichTextLabel" parent="ReportOverlay" unique_id=832640369]
 layout_mode = 0
-anchor_left = 0.15
-anchor_top = 0.1
-anchor_right = 0.85
-anchor_bottom = 0.75
+anchor_left = 0.12
+anchor_top = 0.08
+anchor_right = 0.88
+anchor_bottom = 0.82
+offset_left = 24.0
+offset_top = 12.0
+offset_right = -24.0
+theme_override_font_sizes/normal_font_size = 19
+theme_override_constants/line_separation = 4
 bbcode_enabled = true
 
 [node name="NextSelButton" type="Button" parent="ReportOverlay" unique_id=914828546]
 layout_mode = 0
 anchor_left = 0.4
-anchor_top = 0.78
+anchor_top = 0.86
 anchor_right = 0.6
-anchor_bottom = 0.85
+anchor_bottom = 0.94
 text = "➡️ Next Sel"
 
 [node name="EndScreen" type="Control" parent="." unique_id=1108907684]
@@ -287,7 +326,7 @@ script = ExtResource("7")
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
-color = Color(0, 0, 0, 0.85)
+color = Color(0.015, 0.02, 0.04, 1)
 
 [node name="VBox" type="VBoxContainer" parent="EndScreen" unique_id=1399592511]
 layout_mode = 0
@@ -321,6 +360,29 @@ custom_minimum_size = Vector2(0, 150)
 layout_mode = 2
 bbcode_enabled = true
 
-[node name="DataLabel" type="Label" parent="EndScreen/VBox" unique_id=577735064]
+[node name="DataLabel" type="RichTextLabel" parent="EndScreen/VBox" unique_id=577735064]
+custom_minimum_size = Vector2(0, 70)
 layout_mode = 2
+bbcode_enabled = true
+fit_content = true
+
+[node name="SeedLabel" type="Label" parent="EndScreen/VBox" unique_id=577735065]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Mission seed: ----"
 horizontal_alignment = 1
+
+[node name="Buttons" type="HBoxContainer" parent="EndScreen/VBox" unique_id=1399592512]
+layout_mode = 2
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="NewMissionButton" type="Button" parent="EndScreen/VBox/Buttons" unique_id=1399592513]
+custom_minimum_size = Vector2(180, 44)
+layout_mode = 2
+text = "🚀 New Mission"
+
+[node name="RetrySeedButton" type="Button" parent="EndScreen/VBox/Buttons" unique_id=1399592514]
+custom_minimum_size = Vector2(180, 44)
+layout_mode = 2
+text = "🔁 Retry This Seed"
