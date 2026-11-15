@@ -11,7 +11,6 @@ var event_system: Node
 var end_day_phase: Node
 var hud: CanvasLayer
 var hand_container: HBoxContainer
-var played_cards_container: HBoxContainer
 var end_day_button: Button
 var shelter_button: Button
 var downlink_button: Button
@@ -25,6 +24,7 @@ var nasa_manager: Node
 
 var _crisis_event: Dictionary = {}
 var _science_note: String = ""
+var _animating_hand := false
 
 
 func _ready() -> void:
@@ -33,7 +33,6 @@ func _ready() -> void:
 	end_day_phase = $EndDayPhase
 	hud = $HUD
 	hand_container = $Hand/CardRow
-	played_cards_container = $Board/PlayedCards
 	end_day_button = $EndDayButton
 	shelter_button = $ShelterButton
 	downlink_button = $DownlinkButton
@@ -188,16 +187,21 @@ func _announce_dawn() -> void:
 		lumi_box.add_line(_science_note)
 
 
-func _on_card_pressed(card: Dictionary) -> void:
-	if phase != Phase.GAME:
+func _on_card_pressed(card: Dictionary, card_node: Node = null) -> void:
+	if phase != Phase.GAME or _animating_hand:
 		return
 
 	var reasons: Array = card_system.can_play(card)
 	if reasons.is_empty():
 		card_system.play_card(card)
-		_refresh_hand()
 		_update_action_buttons()
 		say_lumi(str(card.get("lumi_text", "Done!")), "happy")
+		# Animate the played card out before rebuilding the hand.
+		_animating_hand = true
+		if card_node != null and card_node.has_method("animate_played"):
+			await card_node.animate_played()
+		_refresh_hand()
+		_animating_hand = false
 	else:
 		say_lumi(str(reasons[0]), "curious")
 

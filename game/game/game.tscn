@@ -10,7 +10,7 @@
 [ext_resource type="Script" uid="uid://dv6w0ykbokike" path="res://ui/data_panel.gd" id="8"]
 [ext_resource type="Texture2D" uid="uid://brsawed50p8fn" path="res://assets/Lumi.svg" id="9"]
 
-[node name="root" type="Control" unique_id=1693380239]
+[node name="root2" type="Control" unique_id=1693380239]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -244,31 +244,17 @@ theme_override_font_sizes/normal_font_size = 15
 bbcode_enabled = true
 
 [node name="Hand" type="Control" parent="." unique_id=854578857]
-anchors_preset = 0
+layout_mode = 1
 anchor_left = 0.02
 anchor_top = 0.65
 anchor_right = 0.98
 anchor_bottom = 0.95
+offset_top = 3.0517578e-05
 
 [node name="CardRow" type="HBoxContainer" parent="Hand" unique_id=212998625]
 layout_mode = 0
-anchor_right = 1.0
-anchor_bottom = 1.0
+offset_right = 1228.0
 theme_override_constants/separation = 20
-alignment = 1
-
-[node name="Board" type="Control" parent="." unique_id=1404264879]
-anchors_preset = 0
-anchor_left = 0.02
-anchor_top = 0.12
-anchor_right = 0.98
-anchor_bottom = 0.62
-
-[node name="PlayedCards" type="HBoxContainer" parent="Board" unique_id=1257803101]
-layout_mode = 0
-anchor_right = 1.0
-anchor_bottom = 1.0
-theme_override_constants/separation = 16
 alignment = 1
 
 [node name="EndDayButton" type="Button" parent="." unique_id=260333821]
