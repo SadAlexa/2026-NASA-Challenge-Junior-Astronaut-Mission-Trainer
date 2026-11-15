@@ -3,11 +3,12 @@
 [ext_resource type="Script" uid="uid://x5pi7ximldkk" path="res://game/game.gd" id="1"]
 [ext_resource type="Script" uid="uid://bs55hdbulec48" path="res://game/card_system.gd" id="2"]
 [ext_resource type="Script" uid="uid://igxkamb4u23g" path="res://game/event_system.gd" id="3"]
-[ext_resource type="Script" uid="uid://n0k1evjegxm1" path="res://game/end_game_phase.gd" id="4"]
+[ext_resource type="Script" uid="uid://n0k1evjegxm1" path="res://game/end_day_phase.gd" id="4"]
 [ext_resource type="Script" uid="uid://s4fqmb7dutnn" path="res://ui/hud.gd" id="5"]
 [ext_resource type="Script" uid="uid://bd86ur3worq87" path="res://ui/lumi_box.gd" id="6"]
 [ext_resource type="Script" uid="uid://c8wu1a0hrjx4a" path="res://game/end_screen.gd" id="7"]
-[ext_resource type="Script" uid="uid://dv6w0ykbokike" path="res://ui/real_data_panel.gd" id="8"]
+[ext_resource type="Script" uid="uid://dv6w0ykbokike" path="res://ui/data_panel.gd" id="8"]
+[ext_resource type="Texture2D" uid="uid://brsawed50p8fn" path="res://assets/Lumi.svg" id="9"]
 
 [node name="root" type="Control" unique_id=1693380239]
 layout_mode = 3
@@ -176,6 +177,17 @@ anchor_bottom = 1.0
 text = "😊"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="Helmet" type="TextureRect" parent="HUD/LumiBox" unique_id=9000001]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 0
+offset_left = -13.0
+offset_top = -21.599998
+offset_right = 69.0
+offset_bottom = 60.0
+texture = ExtResource("9")
+expand_mode = 1
+stretch_mode = 2
 
 [node name="Speech" type="RichTextLabel" parent="HUD/LumiBox" unique_id=1799515041]
 layout_mode = 0

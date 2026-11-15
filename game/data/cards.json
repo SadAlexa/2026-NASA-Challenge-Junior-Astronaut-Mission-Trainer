@@ -129,7 +129,7 @@
 	"effects": {},
 	"passive_food_per_sol": 3,
 	"requires_no_storm": false,
-	"lumi_text": "We've installed a new hydroponic module! Soon, we'll grow extra vegetables every day."
+	"lumi_text": "We've installed a new hydroponic module! Starting tonight, we'll grow extra vegetables every day."
   },
   {
 	"id": "soil_experiment",
