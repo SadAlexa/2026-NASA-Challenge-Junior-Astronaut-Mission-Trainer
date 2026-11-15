@@ -1,22 +1,22 @@
 extends CanvasLayer
 ## HUD — binds bars to GameState.
 
-@onready var sel_label: Label = $TopBar/SolCounter
-@onready var energy_bar: ProgressBar = $TopBar/EnergyContainer/EnergyBar
-@onready var energy_label: Label = $TopBar/EnergyContainer/EnergyLabel
-@onready var panels_label: Label = $TopBar/PanelsLabel
-@onready var life_bar: ProgressBar = $TopBar/HealthContainer/LifeBar
-@onready var health_label: Label = $TopBar/HealthContainer/HealthLabel
-@onready var o2_mini: Label = $TopBar/O2Mini
-@onready var food_mini: Label = $TopBar/FoodMini
-@onready var water_mini: Label = $TopBar/WaterMini
-@onready var rays_bar: ProgressBar = $TopBar/RaysContainer/RaysBar
-@onready var rays_label: Label = $TopBar/RaysContainer/RaysLabel
-@onready var science_badge: Label = $TopBar/ScienceBadge
+@onready var sel_label: Label = $Panel/TopBar/SolCounter
+@onready var energy_bar: ProgressBar = $Panel/TopBar/EnergyContainer/EnergyBar
+@onready var energy_label: Label = $Panel/TopBar/EnergyContainer/EnergyLabel
+@onready var panels_label: Label = $Panel/TopBar/PanelsLabel
+@onready var life_bar: ProgressBar = $Panel/TopBar/HealthContainer/LifeBar
+@onready var health_label: Label = $Panel/TopBar/HealthContainer/HealthLabel
+@onready var o2_mini: Label = $Panel/TopBar/O2Mini
+@onready var food_mini: Label = $Panel/TopBar/FoodMini
+@onready var water_mini: Label = $Panel/TopBar/WaterMini
+@onready var rays_bar: ProgressBar = $Panel/TopBar/RaysContainer/RaysBar
+@onready var rays_label: Label = $Panel/TopBar/RaysContainer/RaysLabel
+@onready var science_badge: Label = $Panel/TopBar/ScienceBadge
 
 
 func _ready() -> void:
-	for child in $TopBar.get_children():
+	for child in $Panel/TopBar.get_children():
 		if child is Label:
 			child.add_theme_font_size_override("font_size", 14)
 	GameState.state_changed.connect(_update)

@@ -3,7 +3,7 @@ extends Panel
 
 @onready var avatar: ColorRect = $Avatar
 @onready var face_label: Label = $Avatar/FaceLabel
-@onready var helmet: TextureRect = $Helmet
+@onready var helmet: TextureRect = $Avatar/Helmet
 @onready var speech: RichTextLabel = $Speech
 
 var close_btn: Button

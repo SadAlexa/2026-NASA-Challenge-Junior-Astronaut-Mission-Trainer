@@ -19,8 +19,8 @@ var sel_label: Label
 var report_overlay: Control
 var end_screen: Control
 var real_data_panel: Control
-var real_data_btn: Button
 var nasa_manager: Node
+var real_data_btn: Button
 
 var _crisis_event: Dictionary = {}
 var _science_note: String = ""
@@ -37,25 +37,18 @@ func _ready() -> void:
 	shelter_button = $ShelterButton
 	downlink_button = $DownlinkButton
 	lumi_box = $HUD/LumiBox
-	sel_label = $HUD/TopBar/SolCounter
+	sel_label = $HUD/Panel/TopBar/SolCounter
 	report_overlay = $ReportOverlay
 	end_screen = $EndScreen
 	real_data_panel = $HUD/RealDataPanel
+	real_data_btn = $HUD/Button
 
 	# Build-time NASA snapshot.
 	nasa_manager = preload("res://space_weather_manager.gd").new()
 	nasa_manager.name = "SpaceWeatherManager"
 	nasa_manager.weather_loaded.connect(_on_weather_loaded)
 	add_child(nasa_manager)
-
-	# Data button lives in the HUD top bar so it scales with the canvas.
-	real_data_btn = Button.new()
-	real_data_btn.text = "🛰️ Data"
-	real_data_btn.custom_minimum_size = Vector2(72, 30)
-	real_data_btn.add_theme_font_size_override("font_size", 14)
-	real_data_btn.tooltip_text = "Real NASA data used by this game"
 	real_data_btn.pressed.connect(_on_real_data_pressed)
-	$HUD/TopBar.add_child(real_data_btn)
 
 	GameState.state_changed.connect(_on_state_changed)
 	end_day_button.pressed.connect(_on_end_day)
