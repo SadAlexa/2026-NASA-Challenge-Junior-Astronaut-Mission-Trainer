@@ -12,7 +12,7 @@
 [ext_resource type="Theme" uid="uid://b4xchesx8ylq1" path="res://ui/theme.tres" id="10_3vho3"]
 [ext_resource type="Texture2D" uid="uid://dn3d1ab6b5ujf" path="res://assets/background.png" id="10_j8tme"]
 
-[node name="root2" type="Control" unique_id=1693380239]
+[node name="root" type="Control" unique_id=1693380239]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -77,6 +77,8 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
+tooltip_text = "Current Moon revolution of your 10-sel lunar mission"
+mouse_filter = 0
 text = "Sel 1/10"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -84,6 +86,10 @@ vertical_alignment = 1
 [node name="RaysContainer" type="VBoxContainer" parent="HUD/Panel/TopBar" unique_id=1836202231]
 layout_mode = 2
 size_flags_horizontal = 3
+tooltip_text = "Radiation exposure (game units · real mSv/day equivalent)
+Solar storms and EVAs raise it; sheltering halves it.
+Drains health every sol."
+mouse_filter = 0
 alignment = 1
 
 [node name="RaysLabel" type="Label" parent="HUD/Panel/TopBar/RaysContainer" unique_id=716937143]
@@ -103,6 +109,10 @@ size_flags_vertical = 1
 [node name="HealthContainer" type="VBoxContainer" parent="HUD/Panel/TopBar" unique_id=1999250309]
 layout_mode = 2
 size_flags_horizontal = 3
+tooltip_text = "Astronaut health (0–100)
+Radiation damage and inactivity drain it.
+If it reaches 0, the mission fails."
+mouse_filter = 0
 alignment = 1
 
 [node name="HealthLabel" type="Label" parent="HUD/Panel/TopBar/HealthContainer" unique_id=2038302169]
@@ -122,6 +132,10 @@ size_flags_vertical = 1
 [node name="EnergyContainer" type="VBoxContainer" parent="HUD/Panel/TopBar" unique_id=1570030735]
 layout_mode = 2
 size_flags_horizontal = 3
+tooltip_text = "Battery power (0–100)
+Powers your cards and base systems.
+Charged daily by the solar panels — at 0 you go into blackout."
+mouse_filter = 0
 alignment = 1
 
 [node name="EnergyLabel" type="Label" parent="HUD/Panel/TopBar/EnergyContainer" unique_id=1354039648]
@@ -142,6 +156,10 @@ size_flags_vertical = 1
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
+tooltip_text = "Solar panel efficiency (%)
+Sets how much energy you generate each sol.
+Degrades over time and can be damaged by storms."
+mouse_filter = 0
 text = "☀️50%"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -150,6 +168,8 @@ vertical_alignment = 1
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
+tooltip_text = "Oxygen supply (0–100) — keep it above zero!"
+mouse_filter = 0
 text = "O₂:80"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -158,6 +178,8 @@ vertical_alignment = 1
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
+tooltip_text = "Food reserves (0–100)"
+mouse_filter = 0
 text = "🌱60"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -166,6 +188,8 @@ vertical_alignment = 1
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
+tooltip_text = "Water reserves (0–100)"
+mouse_filter = 0
 text = "💧70"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -174,6 +198,8 @@ vertical_alignment = 1
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
+tooltip_text = "Science points collected."
+mouse_filter = 0
 text = "🔬 0"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -314,6 +340,7 @@ offset_left = 67.31995
 offset_top = 346.0
 offset_right = -31.599976
 offset_bottom = -293.6
+tooltip_text = "Panels decay, batteries charge/drain, oxygen/food/water tick, radiation and low gravity affect health."
 mouse_default_cursor_shape = 2
 theme = ExtResource("10_3vho3")
 text = "☀️ End Sel"
@@ -327,6 +354,7 @@ anchor_bottom = 1.0
 offset_top = 346.0
 offset_right = -8.0
 offset_bottom = -293.6
+tooltip_text = "During a solar storm, spend 8 battery to halve the storm's radiation bonus for that sel."
 mouse_default_cursor_shape = 2
 theme = ExtResource("10_3vho3")
 disabled = true
@@ -342,6 +370,7 @@ anchor_bottom = 1.0
 offset_top = 346.0
 offset_right = -8.0
 offset_bottom = -293.6
+tooltip_text = "Send waiting science points to Earth for 4 battery. New data needs one sel to be packaged, and storms cause radio blackouts, so you may have to wait."
 mouse_default_cursor_shape = 2
 theme = ExtResource("10_3vho3")
 disabled = true
@@ -353,6 +382,8 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="Bg" type="ColorRect" parent="ReportOverlay" unique_id=16395870]
 layout_mode = 0
@@ -388,6 +419,8 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("7")
 
 [node name="Bg" type="ColorRect" parent="EndScreen" unique_id=2084517611]

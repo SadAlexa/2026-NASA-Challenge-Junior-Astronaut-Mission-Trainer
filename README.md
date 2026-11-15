@@ -13,8 +13,8 @@ Earth.
 | Action | What it does |
 | --- | --- |
 | **Play a card** | Spend battery to produce food/water, repair panels, exercise or collect science. Up to 3 cards per sel. |
-| **☀️ End Day** | Run the night: panels decay, batteries charge/drain, oxygen/food/water tick, radiation and low gravity affect health. |
-| **🛡️ Shelter** | During a solar storm, spend 8 battery to halve the storm's radiation bonus for that night. |
+| **☀️ End Sel** | Panels decay, batteries charge/drain, oxygen/food/water tick, radiation and low gravity affect health. |
+| **🛡️ Shelter** | During a solar storm, spend 8 battery to halve the storm's radiation bonus for that sel. |
 | **📡 Downlink** | Send waiting science points to Earth for 4 battery. New data needs one sel to be packaged, and storms cause radio blackouts, so you may have to wait. |
 | **🛰️ Data** | Shows every real NASA source used, with links and the archived retrieval date. |
 
@@ -52,7 +52,7 @@ Game values use a friendly 0–100 scale. The conversion is defined in one place
   the lunar-surface reference used by the game).
 - C/M/X storms add **+15 / +35 / +60** radiation units for **2 sels**; X-class
   storms also damage panels by 10%.
-- Radiation health damage is `ceil(effective radiation / 25)` per night.
+- Radiation health damage is `ceil(effective radiation / 25)` per sel.
 - The RadLab/OSDR figure is **absorbed dose in silicon (µGy/h)**, not a human
   equivalent dose; the Data panel says so explicitly.
 
